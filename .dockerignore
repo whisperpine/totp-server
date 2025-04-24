@@ -29,6 +29,8 @@
 /bin
 /hurl
 /target
+/.direnv
+.envrc
 LICENSE
 LICENSE-APACHE
 LICENSE-MIT
