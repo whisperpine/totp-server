@@ -63,6 +63,7 @@
               bacon # background code checker
               just # just a command runner
               hurl # run and test HTTP requests with plain text
+              trivy # find vulnerabilities and misconfigurations
             ];
           };
         }

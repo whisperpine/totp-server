@@ -1,0 +1,13 @@
+## ------------------------------------------------
+## trivy config
+## ------------------------------------------------
+
+# MEDIUM: Specify a tag in the 'FROM' statement for image 'tonistiigi/xx'
+# When using a 'FROM' statement you should use a specific tag to avoid uncontrolled behavior when the image is updated.
+# See https://avd.aquasec.com/misconfig/ds001
+DS001
+
+# LOW: Add HEALTHCHECK instruction in your Dockerfile
+# You should add HEALTHCHECK instruction in your docker container images to perform the health check on running containers.
+# See https://avd.aquasec.com/misconfig/ds026
+DS026
