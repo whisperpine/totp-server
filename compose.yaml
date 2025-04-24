@@ -1,0 +1,24 @@
+# For local dev and test.
+
+services:
+  totp-server:
+    init: true # Terminate container immediately when pressing `ctrl-c`.
+    build:
+      context: .
+      target: final
+      dockerfile: dev.Dockerfile
+    develop:
+      watch:
+        - action: rebuild
+          path: src
+    ports:
+      - 7392:7392
+    environment:
+      # Log level candidates: trace, debug, info, warn, error.
+      RUST_LOG: totp_server=debug
+      # Set RAW_SECRET in .env file.
+      RAW_SECRET: ${RAW_SECRET}
+      # TCP port. Defalut: 7392.
+      TPC_BIND_PORT: 7392
+      # Request rate limit in 30 seconds. Default: 25.
+      REQUEST_RATE_LIMIT: 25
