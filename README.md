@@ -4,6 +4,14 @@ Time-based One-time Password (TOTP) web server.
 
 ## Development
 
+## Dev Environment
+
+Nix flake is used in this project to handle dev environment,
+in conjunction with [direnv](https://github.com/direnv/direnv) and [nix-direnv](https://github.com/nix-community/nix-direnv).
+Although this solution is recommended, it's not mandatory.
+Instead you can mannually install tools declared
+in `with pkgs; [ ]` of [flake.nix](./flake.nix) file.
+
 ### Configurations
 
 Environment variable `RAW_SECRET` should be set in the `.env` file.
