@@ -10,3 +10,8 @@ pub async fn handler_404() -> impl IntoResponse {
 pub async fn handler_502() -> impl IntoResponse {
     (StatusCode::BAD_GATEWAY, "Not a web service")
 }
+
+/// Health check.
+pub async fn health() -> impl IntoResponse {
+    StatusCode::OK
+}

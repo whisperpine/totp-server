@@ -12,8 +12,6 @@
     deny(clippy::print_stdout, clippy::dbg_macro)
 )]
 
-use totp_server::totp;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     use std::net::SocketAddr;
@@ -46,7 +44,7 @@ fn init_tracing_subscriber() {
         .init();
 }
 
-pub fn app() -> axum::Router {
+fn app() -> axum::Router {
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
     use std::time::Duration;
@@ -55,6 +53,7 @@ pub fn app() -> axum::Router {
 
     axum::Router::new()
         .route("/", get(handler_502).post(check_current))
+        .route("/health", get(health))
         .fallback(handler_404)
         .layer(
             ServiceBuilder::new()

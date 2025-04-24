@@ -35,7 +35,7 @@ pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> =
             }
             #[cfg(not(debug_assertions))]
             fn handle_error() -> Vec<u8> {
-                panic!("env var {} should be set.", RAW_SECRET)
+                panic!("env var {RAW_SECRET} should be set.")
             }
             // Get random value in debug build while panic in release build
             handle_error()
@@ -83,15 +83,17 @@ pub async fn check_current(Json(input_token): Json<InputToken>) -> crate::Result
     }
     let totp = new_totp(VEC_SECRET.clone());
     match totp.check_current(&token)? {
-        true => Ok(()),
         false => Err(crate::Error::TotpInvalid),
+        true => {
+            tracing::debug!("correct TOTP: {token}");
+            Ok(())
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::Json;
 
     /// Get the current token.
     async fn get_token() -> crate::Result<Json<InputToken>> {

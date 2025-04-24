@@ -7,10 +7,13 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// Enumeration of errors that can occur in this crate.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    /// The provided TOTP code does not match the expected 6-digit format.
     #[error("TOTP must be a 6-digit number")]
     TotpInvalidFormat,
+    /// The provided TOTP code is invalid or expired.
     #[error("invalid TOTP")]
     TotpInvalid,
+    /// An error occurred while accessing system time.
     #[error(transparent)]
     SystemTime(#[from] std::time::SystemTimeError),
 }
