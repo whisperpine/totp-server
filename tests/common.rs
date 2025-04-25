@@ -60,6 +60,22 @@ async fn wait_until_ready(port: u16) {
     .expect("Health check timeout");
 }
 
+/// Sets up a test environment for the TOTP server.
+///
+/// This function:
+/// - Generates a random secret for the TOTP server.
+/// - Spawns a child process running the TOTP server with the generated secret.
+/// - Waits until the server is ready to accept requests.
+///
+/// # Returns
+/// A tuple containing:
+/// - The child process handle (`Child`).
+/// - The generated TOTP token (`String`).
+/// - The port number the server is bound to (`u16`).
+///
+/// # Panics
+/// It panics when failed to generate a token. In this case,
+/// it's probably because system time the server is not correct.
 #[must_use]
 pub(crate) async fn setup() -> (Child, String, u16) {
     let raw_secret = get_random_secret();
