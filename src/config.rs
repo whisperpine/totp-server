@@ -11,7 +11,7 @@ const REQUEST_RATE_LIMIT: &str = "REQUEST_RATE_LIMIT";
 
 /// Resquest rate limit in every 30 seconds.
 ///
-/// If env var [`REQUEST_RATE_LIMIT`] hans't been set, the default value 25 will be set.
+/// If env var `REQUEST_RATE_LIMIT` hans't been set, the default value 25 will be set.
 pub static RATE_LIMIT: LazyLock<u64> = LazyLock::new(|| match std::env::var(REQUEST_RATE_LIMIT) {
     Ok(value) => value
         .parse::<u64>()
@@ -32,7 +32,7 @@ const TPC_BIND_PORT: &str = "TPC_BIND_PORT";
 
 /// TCP port to bind.
 ///
-/// If env var [`TPC_BIND_PORT`] hans't been set, the default value 7392 will be set.
+/// If env var `TPC_BIND_PORT` hans't been set, the default value 7392 will be set.
 pub static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TPC_BIND_PORT) {
     Ok(value) => value
         .parse::<u16>()
@@ -50,8 +50,8 @@ pub static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TPC_B
 
 /// Check if required env vars have been set correctly.
 ///
-/// Required env vars include: [`RAW_SECRET`](totp::RAW_SECRET)
-/// Optional env vars include: [`REQUEST_RATE_LIMIT`], [`TPC_BIND_PORT`]
+/// Required env vars include: `RAW_SECRET`.
+/// Optional env vars include: `REQUEST_RATE_LIMIT`, `TPC_BIND_PORT`.
 ///
 /// # Panics
 /// It panics when any one of the required env var hasn't been set.

@@ -1,11 +1,16 @@
 //! Time-based One-time Password (TOTP) web server.
+//!
+//! This crate provides a web server for generating and validating TOTP tokens.
 
+/// Defines constants and utilities for server configuration.
 pub mod config;
+/// Defines custom error types and their implementations.
 pub mod error;
-/// Convert [`tower::Service`] inner error [`IntoResponse`]
+/// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
 pub mod service;
-/// Time-based One-time Password (TOTP)
+/// Core module for Time-based One-time Password (TOTP).
 pub mod totp;
+/// Utility routers for fallback and health checks.
 pub mod utils;
 
 pub use config::{BIND_PORT, CRATE_NAME, PKG_VERSION, RATE_LIMIT, env_var_check};

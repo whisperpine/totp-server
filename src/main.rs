@@ -1,4 +1,6 @@
 //! Time-based One-time Password (TOTP) web server.
+//!
+//! This crate provides a web server for generating and validating TOTP tokens.
 
 // rustc
 #![cfg_attr(debug_assertions, allow(unused))]
