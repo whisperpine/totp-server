@@ -9,7 +9,7 @@ Time-based One-time Password (TOTP) web server.
 Nix flake is used in this project to handle dev environment,
 in conjunction with [direnv](https://github.com/direnv/direnv) and [nix-direnv](https://github.com/nix-community/nix-direnv).
 Although this solution is recommended, it's not mandatory.
-Instead you can mannually install tools declared
+Instead you can manually install tools declared
 in `with pkgs; [ ]` of [flake.nix](./flake.nix) file.
 
 ### Configurations
@@ -30,7 +30,7 @@ is used in local test, so it must be installed beforehand.
 ```sh
 # Run totp-server in the log level of debug.
 RUST_LOG="totp_server=debug" cargo run
-# Send http requenst defined in a hurl file.
+# Send http request defined in a hurl file.
 # "Error: invalid TOTP" will occur unless the "token" field is set correctly.
 hurl ./hurl/totp.hurl
 ```
@@ -71,7 +71,7 @@ services:
       RUST_LOG: totp_server=debug
       # Set RAW_SECRET in .env file. It should be at least 16 chars.
       RAW_SECRET: ${RAW_SECRET}
-      # TCP port. Defalut: 7392.
+      # TCP port. Default: 7392.
       TPC_BIND_PORT: 7392
       # Request rate limit in 30 seconds. Default: 25.
       REQUEST_RATE_LIMIT: 25

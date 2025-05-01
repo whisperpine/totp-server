@@ -9,7 +9,7 @@ pub const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
 /// Env var which is used to set [`RATE_LIMIT`]
 const REQUEST_RATE_LIMIT: &str = "REQUEST_RATE_LIMIT";
 
-/// Resquest rate limit in every 30 seconds.
+/// Request rate limit in every 30 seconds.
 ///
 /// If env var `REQUEST_RATE_LIMIT` hans't been set, the default value 25 will be set.
 pub static RATE_LIMIT: LazyLock<u64> = LazyLock::new(|| match std::env::var(REQUEST_RATE_LIMIT) {

@@ -18,7 +18,7 @@ services:
       RUST_LOG: totp_server=debug
       # Set RAW_SECRET in .env file.
       RAW_SECRET: ${RAW_SECRET}
-      # TCP port. Defalut: 7392.
+      # TCP port. Default: 7392.
       TPC_BIND_PORT: 7392
       # Request rate limit in 30 seconds. Default: 25.
       REQUEST_RATE_LIMIT: 25
