@@ -2,8 +2,6 @@
 
 Time-based One-time Password (TOTP) web server.
 
-## Development
-
 ## Dev Environment
 
 Nix flake is used in this project to handle dev environment,
