@@ -66,14 +66,3 @@ just run
 # "Error: invalid TOTP" will occur unless the "token" field is set correctly.
 hurl ./hurl/totp.hurl
 ```
-
-### Docker Compose Watch
-
-This approach is closer to deployment, but is a little bit hassled.
-
-```sh
-# Watch Build context for service and rebuild/refresh containers when files are updated.
-docker compose watch
-```
-
-Configurations can be found in the `build` field of [compose.yaml](./compose.yaml).
