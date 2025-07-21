@@ -1385,7 +1385,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "totp_server"
+name = "totp-server"
 version = "0.1.0-alpha"
 dependencies = [
  "anyhow",

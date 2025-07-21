@@ -1,5 +1,5 @@
 [package]
-name = "totp_server"
+name = "totp-server"
 version = "0.1.0-alpha"
 edition = "2024"
 authors = ["Yusong Lai <yusonglai64@gmail.com>"]
