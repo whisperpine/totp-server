@@ -30,7 +30,12 @@
 /hurl
 /target
 /.direnv
-.envrc
+/.github
+/Justfile
+/flake.nix
+/flake.lock
+/.trivyignore
+/.envrc
 LICENSE
 LICENSE-APACHE
 LICENSE-MIT
