@@ -11,3 +11,7 @@ build:
 trivy:
     trivy fs .
     trivy config .
+
+# run tests and report code coverage
+cov:
+    cargo tarpaulin --engine llvm
