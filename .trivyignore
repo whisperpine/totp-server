@@ -1,6 +1,6 @@
-## ------------------------------------------------
-## trivy config
-## ------------------------------------------------
+# ------------------------------------------------
+# trivy config
+# ------------------------------------------------
 
 # MEDIUM: Specify a tag in the 'FROM' statement for image 'tonistiigi/xx'
 # When using a 'FROM' statement you should use a specific tag to avoid uncontrolled behavior when the image is updated.

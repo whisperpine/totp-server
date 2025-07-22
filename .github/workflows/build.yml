@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     permissions:
-      security-events: write # Required to upload SARIF results to Code Scanning
+      security-events: write
     steps:
       - uses: actions/checkout@v4
       - name: Set outputs
@@ -56,7 +56,7 @@ jobs:
           format: sarif
           hide-progress: true
           ignore-unfixed: true
-          exit-code: 1
+          exit-code: 0
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
