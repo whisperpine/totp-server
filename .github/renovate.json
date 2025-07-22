@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "baseBranchPatterns": ["main"],
+  "labels": ["renovate"],
+  "rebaseWhen": "conflicted",
+  "prHourlyLimit": 2,
+  "automerge": false,
+  "commitMessagePrefix": "chore(deps)",
+  "platform": "github",
+  "repositories": ["whisperpine/totp-server"]
+}
