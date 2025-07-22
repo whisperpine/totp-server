@@ -35,3 +35,31 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
           platforms: linux/amd64,linux/arm64
+
+  scan-cve:
+    name: scan CVE on the image
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    permissions:
+      security-events: write # Required to upload SARIF results to Code Scanning
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
+          severity: CRITICAL,HIGH,MEDIUM
+          output: trivy-results.sarif
+          format: sarif
+          hide-progress: true
+          ignore-unfixed: true
+          exit-code: 1
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ success() || failure() }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-image-scan
