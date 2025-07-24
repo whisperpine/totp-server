@@ -1,0 +1,20 @@
+name: Preview Changelog
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  changelog:
+    name: preview changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history.
+          filter: blob:none
+          fetch-tags: true
+      - uses: cachix/install-nix-action@v31
+      - name: Run git cliff command
+        shell: nix shell nixpkgs#git-cliff --quiet --command bash {0}
+        run: git-cliff --unreleased >> $GITHUB_STEP_SUMMARY

@@ -62,6 +62,7 @@
               cargo-edit # managing cargo dependencies
               cargo-tarpaulin # code coverage tool
               bacon # background code checker
+              git-cliff # generate changelog
               just # just a command runner
               hurl # run and test HTTP requests with plain text
               trivy # find vulnerabilities and misconfigurations
