@@ -1,9 +1,11 @@
 name: Build Container Image
 
 on:
+  pull_request:
   workflow_dispatch:
   push:
     branches: ["main"]
+    tags: ["v*"]
 
 jobs:
   build-and-push:
@@ -31,6 +33,7 @@ jobs:
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
             type=sha,prefix=,format=short
       - name: Build and push Docker image
         uses: docker/build-push-action@v6

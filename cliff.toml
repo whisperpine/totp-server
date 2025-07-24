@@ -5,15 +5,12 @@
 # A Tera template to be rendered as the changelog's footer.
 # See https://keats.github.io/tera/docs/#introduction
 header = """
-# Changelog\n
-All notable changes to this project will be documented in this file.\n
 """
 # A Tera template to be rendered for each release in the changelog.
 # See https://keats.github.io/tera/docs/#introduction
 body = """
----\n
 {% if version %}\
-    ## {{ version | trim_start_matches(pat="v") }} - {{ timestamp | date(format="%Y-%m-%d") }}
+    ## {{ timestamp | date(format="%Y-%m-%d") }}
 {% else %}\
     ## Unreleased
 {% endif %}\
