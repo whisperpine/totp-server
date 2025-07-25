@@ -20,8 +20,7 @@ After 1.0.0:
 ## Versions and Git Tags
 
 While semantic versions are not preceded by `v`,
-`v` is deliberately used in Git Tags.
-
+`v` is deliberately used in Git Tags (e.g. `vMAJOR.MINOR.PATCH`).
 For example, if the semver is `1.2.3`, the corresponding git tag should be `v1.2.3`.
 
 ## Releasing Process
@@ -38,8 +37,10 @@ For example, if the semver is `1.2.3`, the corresponding git tag should be `v1.2
 - Review the prerelease.
   - If it's an unstable version (e.g. `v1.2.3-alpha.1`, `v1.2.3-beta.2`, `v1.2.3-rc.3`),
     everything is done.
-  - If it's a stable version and there's something wrong (it's rare): open RPs
-    to fix issues,
+  - If it's a stable version and there's something wrong in which case new
+    commits are required: open RPs to fix issues (see [Branching
+    Strategy](#branching-strategy) below), and go through the releasing process
+    again.
   - If it's a stable version and everything works as expected: edit the release
     and publish it.
 
@@ -48,5 +49,6 @@ For example, if the semver is `1.2.3`, the corresponding git tag should be `v1.2
 The `main` branch is for actively developing the next version which may include
 breaking changes.
 
-Use branches `release/v1.2` to fix issues found in `v1.2.x` and publish new
-patch versions.
+Use release branches like `release/v1.2` to fix issues found in `v1.2.x` and
+publish new patch versions. These fixes should be first merged into `main`
+branch if applicable, then `git cherry-pick` to the release branch.
