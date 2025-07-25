@@ -3,7 +3,6 @@
 [![license](https://img.shields.io/badge/MIT_OR_Apache--2.0-blue?label=license)](https://github.com/whisperpine/totp-server/blob/main/LICENSE-APACHE)
 [![checks](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/checks.yml?logo=github&label=checks)](https://github.com/whisperpine/totp-server/actions/workflows/checks.yml)
 [![build](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/build.yml?logo=github&label=build)](https://github.com/whisperpine/totp-server/actions/workflows/build.yml)
-[![tests](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/build.yml?logo=github&label=tests)](https://github.com/whisperpine/totp-server/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/whisperpine/totp-server/graph/badge.svg?token=5PCNPENV26)](https://codecov.io/gh/whisperpine/totp-server)
 [![release](https://img.shields.io/github/v/release/whisperpine/totp-server)](https://github.com/whisperpine/totp-server/releases)
 
