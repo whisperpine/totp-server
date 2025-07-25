@@ -16,35 +16,6 @@ jobs:
         shell: nix shell nixpkgs#typos --quiet --command bash {0}
         run: typos --hidden --exclude .git --format brief
 
-  cargo-clippy:
-    runs-on: ubuntu-latest
-    name: lint rust code by clippy
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-      - name: Run cargo clippy
-        # The `-- -D warnings` flag treats all warnings as errors.
-        run: cargo clippy --release -- -D warnings
-
-  cargo-doc:
-    runs-on: ubuntu-latest
-    name: lint rust docstring by rustdoc
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rust-docs
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-      - name: Run cargo doc
-        run: cargo doc
-
   trivy-fs:
     name: use trivy to scan files
     runs-on: ubuntu-latest
@@ -93,3 +64,50 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
           category: trivy-config-scan
+
+  cargo-clippy:
+    runs-on: ubuntu-latest
+    name: lint rust code by clippy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Run cargo clippy
+        # The `-- -D warnings` flag treats all warnings as errors.
+        run: cargo clippy --release -- -D warnings
+
+  cargo-doc:
+    runs-on: ubuntu-latest
+    name: lint rust docstring by rustdoc
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rust-docs
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Run cargo doc
+        run: cargo doc
+
+  code-coverage:
+    runs-on: ubuntu-latest
+    name: tests and code coverage
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+      - uses: cachix/install-nix-action@v31
+      - name: Run tests and gather code coverage data
+        shell: nix shell nixpkgs#cargo-tarpaulin --quiet --command bash {0}
+        run: cargo tarpaulin --engine llvm --out xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
