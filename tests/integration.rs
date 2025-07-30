@@ -3,6 +3,17 @@ mod common;
 use anyhow::Result;
 use reqwest::StatusCode;
 
+#[tokio::test]
+async fn test_start_server() {
+    use std::time::Duration;
+    use tokio::time::timeout;
+    // totp_server::start_server() should never stop, so it's expected to timeout.
+    let is_timeout = timeout(Duration::from_millis(200), totp_server::start_server())
+        .await
+        .is_err();
+    assert!(is_timeout);
+}
+
 /// Provide a correct token.
 #[tokio::test]
 async fn totp_valid() -> Result<()> {
