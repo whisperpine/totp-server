@@ -34,7 +34,7 @@ const TPC_BIND_PORT: &str = "TPC_BIND_PORT";
 /// TCP port to bind.
 ///
 /// If env var `TPC_BIND_PORT` hans't been set, the default value 7392 will be set.
-pub static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TPC_BIND_PORT) {
+pub(crate) static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TPC_BIND_PORT) {
     Ok(value) => value
         .parse::<u16>()
         .expect("TCP_LISTENER_PORT cannot be parsed to u16"),
