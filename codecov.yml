@@ -1,5 +1,11 @@
 coverage:
   range: "0...100"
+  status:
+    # add everything under here, more options at
+    # https://docs.codecov.com/docs/commit-status
+    patch:
+      default:
+        target: 0%
 comment:
   layout: "diff, flags, files"
   require_changes: true # only post the comment if coverage changes
