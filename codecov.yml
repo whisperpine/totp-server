@@ -4,3 +4,5 @@ comment:
   layout: "diff, flags, files"
   require_changes: true # only post the comment if coverage changes
   hide_project_coverage: false
+ignore:
+  - "**/main.rs"
