@@ -1,3 +1,5 @@
+coverage:
+  range: "10...100"
 comment:
   layout: "diff, flags, files"
   require_changes: true # only post the comment if coverage changes
