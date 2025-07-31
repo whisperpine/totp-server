@@ -29,12 +29,12 @@ pub(crate) static RATE_LIMIT: LazyLock<u64> =
     });
 
 /// Env var which is used to set [`BIND_PORT`]
-const TPC_BIND_PORT: &str = "TPC_BIND_PORT";
+const TCP_BIND_PORT: &str = "TCP_BIND_PORT";
 
 /// TCP port to bind.
 ///
-/// If env var `TPC_BIND_PORT` hans't been set, the default value 7392 will be set.
-pub(crate) static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TPC_BIND_PORT) {
+/// If env var `TCP_BIND_PORT` hans't been set, the default value 7392 will be set.
+pub(crate) static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::var(TCP_BIND_PORT) {
     Ok(value) => value
         .parse::<u16>()
         .expect("TCP_LISTENER_PORT cannot be parsed to u16"),
@@ -42,7 +42,7 @@ pub(crate) static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::va
         let default_value: u16 = 7392;
         tracing::info!(
             "env var {} hasn't been set. using default value: {}",
-            TPC_BIND_PORT,
+            TCP_BIND_PORT,
             default_value
         );
         default_value
@@ -52,7 +52,7 @@ pub(crate) static BIND_PORT: LazyLock<u16> = LazyLock::new(|| match std::env::va
 /// Check if required env vars have been set correctly.
 ///
 /// Required env vars include: `RAW_SECRET`.
-/// Optional env vars include: `REQUEST_RATE_LIMIT`, `TPC_BIND_PORT`.
+/// Optional env vars include: `REQUEST_RATE_LIMIT`, `TCP_BIND_PORT`.
 ///
 /// # Panics
 /// It panics when any one of the required env var hasn't been set.

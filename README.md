@@ -37,7 +37,7 @@ services:
       # Set RAW_SECRET in .env file. It should be at least 16 chars.
       RAW_SECRET: ${RAW_SECRET}
       # TCP port. Default: 7392.
-      TPC_BIND_PORT: 7392
+      TCP_BIND_PORT: 7392
       # Request rate limit in 30 seconds. Default: 25.
       REQUEST_RATE_LIMIT: 25
 ```

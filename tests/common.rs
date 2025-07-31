@@ -23,7 +23,7 @@ fn spawn_totp_process(raw_secret: &str, port: u16) -> Child {
     use tokio::process::Command;
     Command::new(EXECUTABLE_PATH)
         .env("RAW_SECRET", raw_secret)
-        .env("TPC_BIND_PORT", port.to_string())
+        .env("TCP_BIND_PORT", port.to_string())
         .stdout(Stdio::null())
         .kill_on_drop(true)
         .spawn()
