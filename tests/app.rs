@@ -12,7 +12,7 @@ async fn test_totp_valid() -> Result<()> {
 
     let res = reqwest::Client::new()
         .post(format!("http://localhost:{port}"))
-        .json(&totp_server::InputToken { token })
+        .json(&totp_server::InputToken::new(token))
         .send()
         .await?;
     assert!(res.status().is_success());
@@ -29,9 +29,7 @@ async fn test_totp_invalid() -> Result<()> {
 
     let res = reqwest::Client::new()
         .post(format!("http://localhost:{port}"))
-        .json(&totp_server::InputToken {
-            token: false_token.to_owned(),
-        })
+        .json(&totp_server::InputToken::new(false_token))
         .send()
         .await?;
     assert_eq!(res.status(), StatusCode::UNAUTHORIZED);
@@ -47,9 +45,7 @@ async fn test_totp_invalid_format() -> Result<()> {
 
     let res = reqwest::Client::new()
         .post(format!("http://localhost:{port}"))
-        .json(&totp_server::InputToken {
-            token: false_token.to_owned(),
-        })
+        .json(&totp_server::InputToken::new(false_token))
         .send()
         .await?;
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);

@@ -2,6 +2,18 @@
 //!
 //! This crate provides a web server for generating and validating TOTP tokens.
 
+// rustc
+// #![cfg_attr(debug_assertions, allow(unused))]
+#![cfg_attr(not(debug_assertions), deny(missing_docs))]
+#![cfg_attr(not(debug_assertions), deny(clippy::unwrap_used))]
+#![cfg_attr(not(debug_assertions), deny(warnings))]
+// clippy
+#![cfg_attr(not(debug_assertions), deny(clippy::todo))]
+#![cfg_attr(
+    not(any(test, debug_assertions)),
+    deny(clippy::print_stdout, clippy::dbg_macro)
+)]
+
 /// Defines constants and utilities for server configuration.
 pub mod config;
 /// Defines custom error types and their implementations.
@@ -22,5 +34,5 @@ pub(crate) use utils::{handler_404, handler_502, health};
 
 pub use config::CRATE_NAME;
 pub use error::{Error, Result};
-pub use server::start_server;
+pub use server::{app, start_server};
 pub use totp::{InputToken, try_get_token};
