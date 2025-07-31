@@ -7,38 +7,31 @@ use reqwest::StatusCode;
 
 /// Provide a correct token.
 #[tokio::test]
-async fn test_totp_valid() -> Result<()> {
+async fn test_totp_input_token() {
     let (mut _child, token, port) = common::setup().await;
 
     let res = reqwest::Client::new()
         .post(format!("http://localhost:{port}"))
-        .json(&totp_server::InputToken::new(token))
+        .json(&totp_server::InputToken::new(&token))
         .send()
-        .await?;
+        .await
+        .unwrap();
     assert!(res.status().is_success());
-    Ok(())
-}
 
-/// Provide an incorrect token.
-#[tokio::test]
-async fn test_totp_invalid() -> Result<()> {
-    let (mut _child, token, port) = common::setup().await;
-    let incorrect_raw_secret = common::get_random_secret();
-    let false_token = totp_server::try_get_token(incorrect_raw_secret.as_bytes())?;
+    let false_token = common::get_random_6_digits();
     assert_ne!(false_token, token);
-
     let res = reqwest::Client::new()
         .post(format!("http://localhost:{port}"))
         .json(&totp_server::InputToken::new(false_token))
         .send()
-        .await?;
+        .await
+        .unwrap();
     assert_eq!(res.status(), StatusCode::UNAUTHORIZED);
-    Ok(())
 }
 
 /// Provide a token in an invalid format.
 #[tokio::test]
-async fn test_totp_invalid_format() -> Result<()> {
+async fn test_totp_invalid_format() {
     let (mut _child, _, port) = common::setup().await;
     // 6-digits token is required, while 5-digits token is provided here.
     let false_token = "12345";
@@ -47,9 +40,9 @@ async fn test_totp_invalid_format() -> Result<()> {
         .post(format!("http://localhost:{port}"))
         .json(&totp_server::InputToken::new(false_token))
         .send()
-        .await?;
+        .await
+        .unwrap();
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);
-    Ok(())
 }
 
 #[tokio::test]
