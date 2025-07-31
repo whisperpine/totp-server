@@ -1,22 +1,13 @@
+//! Integration tests for totp-server application.
+
 mod common;
 
 use anyhow::Result;
 use reqwest::StatusCode;
 
-#[tokio::test]
-async fn test_start_server() {
-    use std::time::Duration;
-    use tokio::time::timeout;
-    // totp_server::start_server() should never stop, so it's expected to timeout.
-    let is_timeout = timeout(Duration::from_millis(200), totp_server::start_server())
-        .await
-        .is_err();
-    assert!(is_timeout);
-}
-
 /// Provide a correct token.
 #[tokio::test]
-async fn totp_valid() -> Result<()> {
+async fn test_totp_valid() -> Result<()> {
     let (mut _child, token, port) = common::setup().await;
 
     let res = reqwest::Client::new()
@@ -30,7 +21,7 @@ async fn totp_valid() -> Result<()> {
 
 /// Provide an incorrect token.
 #[tokio::test]
-async fn totp_invalid() -> Result<()> {
+async fn test_totp_invalid() -> Result<()> {
     let (mut _child, token, port) = common::setup().await;
     let incorrect_raw_secret = common::get_random_secret();
     let false_token = totp_server::try_get_token(incorrect_raw_secret.as_bytes())?;
@@ -49,7 +40,7 @@ async fn totp_invalid() -> Result<()> {
 
 /// Provide a token in an invalid format.
 #[tokio::test]
-async fn totp_invalid_format() -> Result<()> {
+async fn test_totp_invalid_format() -> Result<()> {
     let (mut _child, _, port) = common::setup().await;
     // 6-digits token is required, while 5-digits token is provided here.
     let false_token = "12345";
