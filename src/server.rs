@@ -46,9 +46,6 @@ pub(crate) fn app() -> axum::Router {
         .layer(
             ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(timeout_error_handler))
-                .timeout(Duration::from_secs(1))
-                .layer(HandleErrorLayer::new(buffer_error_handler))
-                .buffer(1)
-                .rate_limit(*RATE_LIMIT, Duration::from_secs(30)),
+                .timeout(Duration::from_secs(1)),
         )
 }

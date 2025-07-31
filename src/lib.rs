@@ -31,8 +31,8 @@ mod utils;
 #[cfg(test)]
 mod tests;
 
-pub(crate) use config::{BIND_PORT, PKG_VERSION, RATE_LIMIT, env_var_check};
-pub(crate) use service::{buffer_error_handler, timeout_error_handler};
+pub(crate) use config::{BIND_PORT, PKG_VERSION, env_var_check};
+pub(crate) use service::timeout_error_handler;
 pub(crate) use totp::{VEC_SECRET, check_current};
 pub(crate) use utils::{handler_404, handler_502, health};
 
