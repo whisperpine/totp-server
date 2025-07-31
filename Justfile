@@ -14,4 +14,6 @@ trivy:
 
 # run tests and report code coverage
 cov:
-    cargo tarpaulin --engine llvm
+    # Options "--skip-clean" and "--avoid-cfg-tarpaulin" speed up local commands
+    # (no interference with cargo test, cargo check), but should not be used in CI.
+    cargo tarpaulin --engine llvm --skip-clean --avoid-cfg-tarpaulin --frozen
