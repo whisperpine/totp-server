@@ -16,6 +16,7 @@
 
 #[tokio::main]
 async fn main() {
+    setup_panic_hook();
     init_tracing_subscriber();
     totp_server::start_server().await;
 }
@@ -31,4 +32,26 @@ fn init_tracing_subscriber() {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
+}
+
+/// Call this function in `main()` to setup panic hook.
+fn setup_panic_hook() {
+    use std::panic::{PanicHookInfo, set_hook};
+    set_hook(Box::new(|panic_info: &PanicHookInfo| {
+        // Extract the panic message.
+        let message = panic_info
+            .payload()
+            .downcast_ref::<String>()
+            .map_or("no message", |s| s);
+
+        // Extract the location (file and line).
+        let location = panic_info
+            .location()
+            .map_or("unknown location".to_owned(), |loc| {
+                format!("{}:{}", loc.file(), loc.line())
+            });
+
+        // Log the panic with structured fields.
+        tracing::error!(panic_message = message, location = location);
+    }));
 }
