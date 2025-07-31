@@ -19,10 +19,12 @@ fn get_available_port() -> u16 {
 /// The process will be killed on drop.
 #[must_use]
 fn spawn_totp_process(raw_secret: &str, port: u16) -> Child {
+    use std::process::Stdio;
     use tokio::process::Command;
     Command::new(EXECUTABLE_PATH)
         .env("RAW_SECRET", raw_secret)
         .env("TPC_BIND_PORT", port.to_string())
+        .stdout(Stdio::null())
         .kill_on_drop(true)
         .spawn()
         .expect("failed to spawn child process")
