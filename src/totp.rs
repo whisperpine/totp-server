@@ -21,6 +21,7 @@ const RAW_SECRET: &str = "RAW_SECRET";
 /// ```
 ///
 /// # Panic
+///
 /// Panics when env var [`RAW_SECRET`] hasn't been set.
 pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> =
     LazyLock::new(|| match std::env::var(RAW_SECRET) {
@@ -45,11 +46,13 @@ pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> =
 /// Create a new instance of [`TOTP`] with given parameters.
 ///
 /// # Panics
+///
 /// It panics if the `digit` or `secret` size is invalid.
 /// `digit` is set by [`TOKEN_DIGITS`], thus it's unlikely to be invalid.
 /// `secret` must have bitsize of at least 128 or it will panic.
 fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
-    TOTP::new(Algorithm::SHA1, TOKEN_DIGITS, 1, 30, secret.into()).unwrap()
+    TOTP::new(Algorithm::SHA1, TOKEN_DIGITS, 1, 30, secret.into())
+        .unwrap_or_else(|e| panic!("failed creating a new instance of TOTP: {e}"))
 }
 
 /// Try get totp token with raw secret.
@@ -57,6 +60,7 @@ fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
 /// Param `secret` should be at least 128 bit.
 ///
 /// # Example
+///
 /// ```
 /// use totp_server::totp::try_get_token;
 /// let vec = "999a999a999a999a".as_bytes();
@@ -69,9 +73,19 @@ pub fn try_get_token(secret: &[u8]) -> crate::Result<String> {
     Ok(token)
 }
 
+/// The 6-digits token that users input.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InputToken {
-    pub token: String,
+    token: String,
+}
+
+impl InputToken {
+    /// Create a new [`InputToken`].
+    pub fn new(value: impl Into<String>) -> Self {
+        InputToken {
+            token: value.into(),
+        }
+    }
 }
 
 /// Check if the given token is valid.
@@ -98,7 +112,7 @@ mod tests {
     /// Get the current token.
     async fn get_token() -> crate::Result<Json<InputToken>> {
         let token = try_get_token(&VEC_SECRET)?;
-        let my_token = InputToken { token };
+        let my_token = InputToken::new(token);
         Ok(Json(my_token))
     }
 
