@@ -20,12 +20,16 @@ pub mod config;
 pub mod error;
 /// The entry point of totp_server library.
 pub mod server;
-/// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
-pub mod service;
 /// Core module for Time-based One-time Password (TOTP).
 pub mod totp;
+
+/// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
+mod service;
 /// Utility routers for fallback and health checks.
-pub mod utils;
+mod utils;
+
+#[cfg(test)]
+mod tests;
 
 pub(crate) use config::{BIND_PORT, PKG_VERSION, RATE_LIMIT, env_var_check};
 pub(crate) use service::{buffer_error_handler, timeout_error_handler};
@@ -34,5 +38,5 @@ pub(crate) use utils::{handler_404, handler_502, health};
 
 pub use config::CRATE_NAME;
 pub use error::{Error, Result};
-pub use server::{app, start_server};
+pub use server::start_server;
 pub use totp::{InputToken, try_get_token};

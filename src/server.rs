@@ -32,7 +32,7 @@ pub async fn start_server() {
 /// # Returns
 ///
 /// An [`axum::Router`] configured with routes and middleware for the TOTP service.
-pub fn app() -> axum::Router {
+pub(crate) fn app() -> axum::Router {
     use crate::*;
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
