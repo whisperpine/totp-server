@@ -48,7 +48,7 @@ pub(crate) fn app() -> axum::Router {
             .per_second(30)
             .burst_size(*crate::config::RATE_LIMIT)
             .finish()
-            .unwrap(),
+            .expect("failed to configure tower_governor"),
     );
 
     axum::Router::new()
