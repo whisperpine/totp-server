@@ -22,10 +22,20 @@ const RAW_SECRET: &str = "RAW_SECRET";
 ///
 /// # Panic
 ///
-/// Panics when env var [`RAW_SECRET`] hasn't been set.
-pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> =
-    LazyLock::new(|| match std::env::var(RAW_SECRET) {
-        Ok(value) => value.as_bytes().to_vec(),
+/// - When env var [`RAW_SECRET`] hasn't been set or its bitsize is smaller than 128.
+/// - When [`RAW_SECRET`] is missing in release profile cfg(not(debug_assertions)).
+pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> = LazyLock::new(init_vec_secret);
+
+fn init_vec_secret() -> Vec<u8> {
+    match std::env::var(RAW_SECRET) {
+        Ok(value) => {
+            let result = value.as_bytes().to_vec();
+            let bitsize = result.len() * 8;
+            if bitsize < 128 {
+                panic!("the bitsize of RAW_SECRET should at least 128 (the given one is {bitsize})")
+            }
+            result
+        }
         Err(_) => {
             #[cfg(debug_assertions)]
             fn handle_error() -> Vec<u8> {
@@ -41,7 +51,8 @@ pub(crate) static VEC_SECRET: LazyLock<Vec<u8>> =
             // Get random value in debug build while panic in release build
             handle_error()
         }
-    });
+    }
+}
 
 /// Create a new instance of [`TOTP`] with given parameters.
 ///
@@ -120,5 +131,35 @@ mod tests {
     async fn test_token_checker_correct() {
         let my_token = get_token().await.unwrap();
         check_current(my_token).await.unwrap();
+    }
+
+    #[test]
+    #[cfg(debug_assertions)]
+    fn test_vec_secret_default_debug() {
+        assert!(std::env::var(RAW_SECRET).is_err());
+        assert_eq!(VEC_SECRET.len(), 32);
+    }
+
+    #[test]
+    #[should_panic]
+    #[cfg(not(debug_assertions))]
+    fn test_vec_secret_default_not_debug() {
+        assert!(std::env::var(RAW_SECRET).is_err());
+        let _ = *VEC_SECRET;
+    }
+
+    #[test]
+    #[expect(unsafe_code)]
+    fn test_vec_secret_default_var() {
+        unsafe { std::env::set_var(RAW_SECRET, "^mzshbK&T6ng5hSNc6Lq$i") }
+        assert!(VEC_SECRET.len() >= 16);
+    }
+
+    #[test]
+    #[should_panic]
+    #[expect(unsafe_code)]
+    fn test_vec_secret_default_var_panic() {
+        unsafe { std::env::set_var(RAW_SECRET, "ng5NcL$i") }
+        let _ = *VEC_SECRET;
     }
 }

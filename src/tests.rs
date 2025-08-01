@@ -2,6 +2,7 @@
 
 use crate::server::app;
 use axum::{http::StatusCode, routing::get};
+use rstest::rstest;
 use std::net::SocketAddr;
 use tokio::sync::oneshot;
 
@@ -94,11 +95,13 @@ async fn test_health() {
     let _ = handle.await.unwrap();
 }
 
+#[rstest]
 #[tokio::test]
-async fn test_totp_invalid_format() {
+#[case("12345")]
+#[case("123")]
+// 6-digits token is required.
+async fn test_totp_invalid_format(#[case] false_token: &str) {
     let (addr, tx, handle) = setup_server(app()).await;
-    // 6-digits token is required, while 5-digits token is provided here.
-    let false_token = "12345";
     let response = reqwest::Client::new()
         .post(format!("http://{addr}"))
         .json(&crate::InputToken::new(false_token))
