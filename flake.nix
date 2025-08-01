@@ -48,7 +48,10 @@
           #   targets = [ ];
           # };
           rust.nightly."2025-06-20".default.override {
-            extensions = [ "rust-src" ];
+            extensions = [
+              "rust-src"
+              "llvm-tools"
+            ];
             targets = [ ];
           };
       };
@@ -62,7 +65,6 @@
               cargo-edit # managing cargo dependencies
               cargo-nextest # next-generation test runner
               cargo-llvm-cov # LLVM source-based code coverage
-              cargo-tarpaulin # code coverage tool
               bacon # background code checker
               git-cliff # generate changelog
               just # just a command runner

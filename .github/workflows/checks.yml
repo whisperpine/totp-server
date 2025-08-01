@@ -103,13 +103,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
       - uses: cachix/install-nix-action@v31
       - name: Run tests and gather code coverage data
-        shell: nix shell nixpkgs#cargo-tarpaulin --quiet --command bash {0}
-        run: cargo tarpaulin --engine llvm --out xml
+        shell: nix shell nixpkgs#cargo-llvm-cov nixpkgs#cargo-nextest --quiet --command bash {0}
+        run: cargo llvm-cov nextest --lcov --output-path lcov.info
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
+          files: lcov.info
           fail_ci_if_error: true

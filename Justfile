@@ -12,8 +12,6 @@ trivy:
     trivy fs .
     trivy config .
 
-# run tests and report code coverage
+# run tests and report code coverage in html format
 cov:
-    # Options "--skip-clean" and "--avoid-cfg-tarpaulin" speed up local commands
-    # (no interference with cargo test, cargo check), but should not be used in CI.
-    cargo tarpaulin --engine llvm --skip-clean --avoid-cfg-tarpaulin --frozen
+    cargo llvm-cov nextest --html --open
