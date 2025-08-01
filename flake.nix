@@ -60,6 +60,8 @@
             packages = with pkgs; [
               rustToolchain
               cargo-edit # managing cargo dependencies
+              cargo-nextest # next-generation test runner
+              cargo-llvm-cov # LLVM source-based code coverage
               cargo-tarpaulin # code coverage tool
               bacon # background code checker
               git-cliff # generate changelog
