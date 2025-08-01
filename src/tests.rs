@@ -17,9 +17,12 @@ async fn setup_server(
     let addr = listener.local_addr().unwrap();
     // Create a oneshot channel for shutdown signaling.
     let (tx, rx) = oneshot::channel::<()>();
-    let server = axum::serve(listener, router)
-        .with_graceful_shutdown(async { rx.await.unwrap() })
-        .into_future();
+    let server = axum::serve(
+        listener,
+        router.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .with_graceful_shutdown(async { rx.await.unwrap() })
+    .into_future();
     let handle = tokio::spawn(server);
     wait_until_ready(addr).await;
     (addr, tx, handle)
@@ -140,6 +143,32 @@ async fn test_timeout_middleware() {
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::REQUEST_TIMEOUT);
+    tx.send(()).unwrap();
+    let _ = handle.await.unwrap();
+}
+
+#[tokio::test]
+async fn test_too_many_requests() {
+    let (addr, tx, handle) = setup_server(app()).await;
+    let client = reqwest::Client::new();
+    // There's a health check request in `setup_server()` above,
+    // which already counts 1 request, thus `- 1` is used here.
+    for _ in 0..(*crate::config::RATE_LIMIT - 1) {
+        let response = client
+            .get(format!("http://{addr}/health"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+    }
+    for _ in 0..3 {
+        let response = client
+            .get(format!("http://{addr}/health"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::TOO_MANY_REQUESTS);
+    }
     tx.send(()).unwrap();
     let _ = handle.await.unwrap();
 }

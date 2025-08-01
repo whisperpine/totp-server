@@ -24,7 +24,8 @@ features = ["http2", "charset", "rustls-tls", "json"]
 [dependencies]
 # web serivce
 axum = "0.8.3"
-tower = { version = "0.5.0", features = ["timeout", "buffer", "limit"] }
+tower_governor = "0.7.0"
+tower = { version = "0.5.0", features = ["timeout"] }
 # error handling
 anyhow = "1.0.98"
 thiserror = "2.0.12"

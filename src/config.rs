@@ -12,13 +12,13 @@ const REQUEST_RATE_LIMIT: &str = "REQUEST_RATE_LIMIT";
 /// Request rate limit in every 30 seconds.
 ///
 /// If env var `REQUEST_RATE_LIMIT` hans't been set, the default value 25 will be set.
-pub(crate) static RATE_LIMIT: LazyLock<u64> =
+pub(crate) static RATE_LIMIT: LazyLock<u32> =
     LazyLock::new(|| match std::env::var(REQUEST_RATE_LIMIT) {
         Ok(value) => value
-            .parse::<u64>()
+            .parse::<u32>()
             .expect("REQUEST_RATE_LIMIT should be an unsigned integer!"),
         Err(_) => {
-            let default_value: u64 = 25;
+            let default_value: u32 = 25;
             tracing::info!(
                 "env var {} hasn't been set. using default value: {}",
                 REQUEST_RATE_LIMIT,
