@@ -92,6 +92,37 @@ async fn test_health() {
 }
 
 #[tokio::test]
+async fn test_totp_invalid_format() {
+    let (addr, tx, handle) = setup_server(app()).await;
+    // 6-digits token is required, while 5-digits token is provided here.
+    let false_token = "12345";
+    let response = reqwest::Client::new()
+        .post(format!("http://{addr}"))
+        .json(&crate::InputToken::new(false_token))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    tx.send(()).unwrap();
+    let _ = handle.await.unwrap();
+}
+
+#[tokio::test]
+async fn test_token_checker_incorrect() {
+    let (addr, tx, handle) = setup_server(app()).await;
+    let false_token = format!("{:0>6}", rand::random_range(0..=999999));
+    let response = reqwest::Client::new()
+        .post(format!("http://{addr}"))
+        .json(&crate::InputToken::new(false_token))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    tx.send(()).unwrap();
+    let _ = handle.await.unwrap();
+}
+
+#[tokio::test]
 async fn test_timeout_middleware() {
     use axum::error_handling::HandleErrorLayer;
     let router = axum::Router::new()

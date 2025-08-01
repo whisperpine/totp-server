@@ -117,7 +117,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn token_checker_test() {
+    async fn test_token_checker_correct() {
         let my_token = get_token().await.unwrap();
         check_current(my_token).await.unwrap();
     }
