@@ -1,4 +1,4 @@
-# CONTRIBUTING
+# Version Management and Releasing Process
 
 ## Versioning Guidelines
 
