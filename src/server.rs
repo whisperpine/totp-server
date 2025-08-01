@@ -51,6 +51,17 @@ pub(crate) fn app() -> axum::Router {
             .expect("failed to configure tower_governor"),
     );
 
+    let governor_limiter = governor_conf.limiter().clone();
+    let interval = Duration::from_secs(60);
+    // A separate background task to clean up.
+    tokio::spawn(async move {
+        loop {
+            tokio::time::sleep(interval).await;
+            tracing::trace!("rate limiting storage size: {}", governor_limiter.len());
+            governor_limiter.retain_recent();
+        }
+    });
+
     axum::Router::new()
         .route("/", get(handler_502).post(check_current))
         .route("/health", get(health))
