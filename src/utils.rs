@@ -1,3 +1,4 @@
+use axum::extract::Path;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 
@@ -13,5 +14,16 @@ pub(crate) async fn handler_502() -> impl IntoResponse {
 
 /// Health check.
 pub(crate) async fn health() -> impl IntoResponse {
+    StatusCode::OK
+}
+
+/// Sleep for given seconds.
+///
+/// This should be used to test the [`tokio::timeout::TimeoutLayer`] middleware.
+#[cfg_attr(not(test), expect(dead_code))]
+pub(crate) async fn sleep_secs(Path(seconds): Path<u64>) -> impl IntoResponse {
+    use std::time::Duration;
+    use tokio::time::sleep;
+    sleep(Duration::from_secs(seconds)).await;
     StatusCode::OK
 }

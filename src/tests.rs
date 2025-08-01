@@ -1,10 +1,13 @@
 //! Unit tests for totp-server lib.
 
-use axum::http::StatusCode;
+use crate::server::app;
+use axum::{http::StatusCode, routing::get};
 use std::net::SocketAddr;
 use tokio::sync::oneshot;
 
-async fn setup_server() -> (
+async fn setup_server(
+    router: axum::Router,
+) -> (
     SocketAddr,
     oneshot::Sender<()>,
     tokio::task::JoinHandle<Result<(), std::io::Error>>,
@@ -14,7 +17,7 @@ async fn setup_server() -> (
     let addr = listener.local_addr().unwrap();
     // Create a oneshot channel for shutdown signaling.
     let (tx, rx) = oneshot::channel::<()>();
-    let server = axum::serve(listener, crate::server::app())
+    let server = axum::serve(listener, router)
         .with_graceful_shutdown(async { rx.await.unwrap() })
         .into_future();
     let handle = tokio::spawn(server);
@@ -49,7 +52,7 @@ async fn wait_until_ready(addr: SocketAddr) {
 
 #[tokio::test]
 async fn test_handler_502() {
-    let (addr, tx, handle) = setup_server().await;
+    let (addr, tx, handle) = setup_server(app()).await;
     let response = reqwest::Client::new()
         .get(format!("http://{addr}"))
         .send()
@@ -63,7 +66,7 @@ async fn test_handler_502() {
 
 #[tokio::test]
 async fn test_handler_404() {
-    let (addr, tx, handle) = setup_server().await;
+    let (addr, tx, handle) = setup_server(app()).await;
     let response = reqwest::Client::new()
         .get(format!("http://{addr}/somewhere/unreachable"))
         .send()
@@ -77,13 +80,35 @@ async fn test_handler_404() {
 
 #[tokio::test]
 async fn test_health() {
-    let (addr, tx, handle) = setup_server().await;
+    let (addr, tx, handle) = setup_server(app()).await;
     let response = reqwest::Client::new()
         .get(format!("http://{addr}/health"))
         .send()
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
+    tx.send(()).unwrap();
+    let _ = handle.await.unwrap();
+}
+
+#[tokio::test]
+async fn test_timeout_middleware() {
+    use axum::error_handling::HandleErrorLayer;
+    let router = axum::Router::new()
+        .route("/health", get(crate::health))
+        .route("/sleep/{seconds}", get(crate::utils::sleep_secs))
+        .layer(
+            tower::ServiceBuilder::new()
+                .layer(HandleErrorLayer::new(crate::timeout_error_handler))
+                .timeout(std::time::Duration::from_secs_f32(0.2)),
+        );
+    let (addr, tx, handle) = setup_server(router).await;
+    let response = reqwest::Client::new()
+        .get(format!("http://{addr}/sleep/5"))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::REQUEST_TIMEOUT);
     tx.send(()).unwrap();
     let _ = handle.await.unwrap();
 }
