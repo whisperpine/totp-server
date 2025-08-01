@@ -15,23 +15,22 @@
 )]
 
 /// Defines constants and utilities for server configuration.
-pub mod config;
+mod config;
 /// Defines custom error types and their implementations.
-pub mod error;
+mod error;
 /// The entry point of totp_server library.
-pub mod server;
-/// Core module for Time-based One-time Password (TOTP).
-pub mod totp;
-
+mod server;
 /// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
 mod service;
+/// Core module for Time-based One-time Password (TOTP).
+mod totp;
 /// Utility routers for fallback and health checks.
 mod utils;
 
 #[cfg(test)]
 mod tests;
 
-pub(crate) use config::{BIND_PORT, PKG_VERSION, env_var_check};
+pub(crate) use config::{BIND_PORT, PKG_VERSION, RATE_LIMIT, env_var_check};
 pub(crate) use service::timeout_error_handler;
 pub(crate) use totp::{VEC_SECRET, check_current};
 pub(crate) use utils::{handler_404, handler_502, health};

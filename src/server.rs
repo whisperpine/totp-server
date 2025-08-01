@@ -46,7 +46,7 @@ pub(crate) fn app() -> axum::Router {
     let governor_conf = std::sync::Arc::new(
         tower_governor::governor::GovernorConfigBuilder::default()
             .per_second(30)
-            .burst_size(*crate::config::RATE_LIMIT)
+            .burst_size(*crate::RATE_LIMIT)
             .finish()
             .expect("failed to configure tower_governor"),
     );

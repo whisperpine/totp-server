@@ -153,7 +153,7 @@ async fn test_too_many_requests() {
     let client = reqwest::Client::new();
     // There's a health check request in `setup_server()` above,
     // which already counts 1 request, thus `- 1` is used here.
-    for _ in 0..(*crate::config::RATE_LIMIT - 1) {
+    for _ in 0..(*crate::RATE_LIMIT - 1) {
         let response = client
             .get(format!("http://{addr}/health"))
             .send()
