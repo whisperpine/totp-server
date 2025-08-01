@@ -62,7 +62,7 @@ fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
 /// # Example
 ///
 /// ```
-/// use totp_server::totp::try_get_token;
+/// use totp_server::try_get_token;
 /// let vec = "999a999a999a999a".as_bytes();
 /// assert!(vec.len() >= 16);
 /// let token = try_get_token(&vec).unwrap();
