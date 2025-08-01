@@ -1,7 +1,7 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use tokio::time::error::Elapsed;
 use tower::BoxError;
+use tower::timeout::error::Elapsed;
 
 /// Handle errors raised by [`tower::ServiceBuilder::timeout`].
 pub(crate) async fn timeout_error_handler(err: BoxError) -> impl IntoResponse {
