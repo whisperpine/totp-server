@@ -54,8 +54,8 @@ in `with pkgs; [ ]` of [flake.nix](./flake.nix) file.
 
 Env var `RAW_SECRET` should be set in the `.env` file.
 `RAW_SECRET` must be composed of at least 16 characters.
-It's recommended to set `RAW_SECRET` in local dev environment,
-and it must be set in any kind of deployment.
+It's optional to set `RAW_SECRET` in local dev environment,
+but is mandatory to set when deployed.
 
 Refer to the [Docker Compose](#docker-compose) section to see the full picture
 of environment variables.
