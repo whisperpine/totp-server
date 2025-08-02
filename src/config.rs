@@ -59,7 +59,7 @@ fn init_bind_port() -> u16 {
             })
             .expect("TCP_LISTENER_PORT cannot be parsed to u16"),
         Err(_) => {
-            let default_value: u16 = 7392;
+            let default_value: u16 = 9000;
             tracing::info!(
                 "env var {} hasn't been set. using default value: {}",
                 TCP_BIND_PORT,
@@ -119,7 +119,7 @@ mod tests {
     #[test]
     fn test_bind_port_default() {
         assert!(std::env::var(TCP_BIND_PORT).is_err());
-        assert_eq!(*BIND_PORT, 7392);
+        assert_eq!(*BIND_PORT, 9000);
     }
 
     #[rstest]

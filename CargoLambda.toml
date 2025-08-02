@@ -1,0 +1,8 @@
+# Refer to the configuration document:
+# https://www.cargo-lambda.info/guide/configuration.html
+
+[build]
+# ./target/lambda/totp-server/bootstrap.zip
+output_format = "zip"
+include = ["README.md"]
+arm64 = true

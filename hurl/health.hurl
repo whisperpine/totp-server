@@ -1,2 +1,2 @@
-GET http://localhost:7392/health
+GET http://localhost:9000/health
 HTTP 200
