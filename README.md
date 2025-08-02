@@ -31,6 +31,8 @@ services:
     init: true # Terminate container immediately when pressing `ctrl-c`.
     image: ghcr.io/whisperpine/totp-server
     restart: unless-stopped
+    ports:
+      - 7392:7392
     environment:
       # Log level candidates: trace, debug, info, warn, error.
       RUST_LOG: totp_server=debug
