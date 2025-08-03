@@ -40,7 +40,6 @@ pub(crate) fn app() -> axum::Router {
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
     use std::time::Duration;
-    use tower::ServiceBuilder;
 
     // Configure the rate limiter.
     let governor_conf = std::sync::Arc::new(
@@ -67,7 +66,7 @@ pub(crate) fn app() -> axum::Router {
         .route("/health", get(health))
         .fallback(handler_404)
         .layer(
-            ServiceBuilder::new()
+            tower::ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(timeout_error_handler))
                 .timeout(Duration::from_secs(1))
                 .layer(tower_governor::GovernorLayer {

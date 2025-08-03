@@ -43,6 +43,7 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 # utility
 totp-rs = "5.7.0"
 rand = "0.9.1"
+lambda_http = "0.16.0"
 
 # rustc lints (https://doc.rust-lang.org/rustc/lints/index.html)
 [lints.rust]

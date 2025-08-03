@@ -18,7 +18,16 @@
 async fn main() {
     setup_panic_hook();
     init_tracing_subscriber();
-    totp_server::start_server().await;
+
+    if is_on_lambda() {
+        totp_server::start_server_aws_lambda().await;
+    } else {
+        totp_server::start_server().await;
+    }
+}
+
+fn is_on_lambda() -> bool {
+    std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok()
 }
 
 fn init_tracing_subscriber() {

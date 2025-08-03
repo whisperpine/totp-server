@@ -44,15 +44,18 @@
             rust = prev.rust-bin;
           in
           # rust.stable.latest.default.override {
-          #   extensions = [ "rust-src" ];
-          #   targets = [ ];
+          #   extensions = [
+          #     "rust-src"
+          #     "llvm-tools" # required by cargo-llvm-cov
+          #   ];
+          #   targets = [ "aarch64-unknown-linux-gnu" ];
           # };
           rust.nightly."2025-06-20".default.override {
             extensions = [
               "rust-src"
-              "llvm-tools"
+              "llvm-tools" # required by cargo-llvm-cov
             ];
-            targets = [ ];
+            targets = [ "aarch64-unknown-linux-gnu" ];
           };
       };
 
@@ -65,6 +68,7 @@
               cargo-edit # managing cargo dependencies
               cargo-nextest # next-generation test runner
               cargo-llvm-cov # LLVM source-based code coverage
+              cargo-lambda # work with AWS Lambda
               bacon # background code checker
               git-cliff # generate changelog
               just # just a command runner

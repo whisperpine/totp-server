@@ -18,6 +18,8 @@
 mod config;
 /// Defines custom error types and their implementations.
 mod error;
+/// AWS Lambda
+mod lambda;
 /// The entry point of totp_server library.
 mod server;
 /// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
@@ -37,5 +39,6 @@ pub(crate) use utils::{handler_404, handler_502, health};
 
 pub use config::CRATE_NAME;
 pub use error::{Error, Result};
+pub use lambda::start_server_aws_lambda;
 pub use server::start_server;
 pub use totp::{InputToken, try_get_token};

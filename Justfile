@@ -3,15 +3,20 @@ run:
     RUST_LOG="totp_server=debug" \
     cargo run
 
-# build the totp-server container image locally
-build:
-    docker build -t totp-server .
-
 # find vulnerabilities and misconfigurations by trivy
 trivy:
-    trivy fs .
+    trivy fs --skip-dirs "./target" .
     trivy config .
 
 # run tests and report code coverage in html format
 cov:
     cargo llvm-cov nextest --html --open
+
+# compile AWS Lambda functions according to CargoLambda.toml
+build:
+    cargo lambda build --release
+
+# boot the dev server locally that emulates AWS Lambda
+watch:
+    RUST_LOG="cargo_lambda=info,totp_server=debug" \
+    cargo lambda watch
