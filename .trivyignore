@@ -20,3 +20,11 @@ DS026
 # activity. This will allow for identifying bo ttlenecks, slow downs and timeouts.
 # See https://avd.aquasec.com/misconfig/avd-aws-0066
 AVD-AWS-0066
+
+
+# LOW: Log group is not encrypted.
+# CloudWatch log groups are encrypted by default, however, to get the full
+# benefit of controlling key rotation and other KMS aspects a KMS CMK should be
+# used.
+# See https://avd.aquasec.com/misconfig/avd-aws-0017
+AVD-AWS-0017

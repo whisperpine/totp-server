@@ -14,3 +14,8 @@ variable "lambda_env_var" {
   type        = map(string)
   sensitive   = true
 }
+
+variable "log_retention_days" {
+  description = "the retention days of logs in AWS Cloudwatch"
+  type        = number
+}

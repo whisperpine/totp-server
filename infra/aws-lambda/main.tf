@@ -51,6 +51,8 @@ resource "aws_lambda_function" "default" {
   environment {
     variables = var.lambda_env_var
   }
+  # Ensure Log Group is created before Lambda if logging is enabled.
+  depends_on = [aws_cloudwatch_log_group.default]
 }
 
 # Lambda Function URL
@@ -58,4 +60,14 @@ resource "aws_lambda_function" "default" {
 resource "aws_lambda_function_url" "default" {
   function_name      = aws_lambda_function.default.function_name
   authorization_type = "NONE" # Public access.
+}
+
+# CloudWatch Log Group
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group
+resource "aws_cloudwatch_log_group" "default" {
+  name              = "/aws/lambda/${var.function_name}"
+  retention_in_days = var.log_retention_days
+  lifecycle {
+    create_before_destroy = true
+  }
 }

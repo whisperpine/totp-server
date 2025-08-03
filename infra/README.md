@@ -10,7 +10,7 @@ or [OpenTofu](https://github.com/opentofu/opentofu)
 - [aws-common](./aws-common/README.md):
   Create commonly used aws resources (e.g. aws resource group).
 - [aws-lambda](./aws-lambda/README.md):
-  Create an AWS Lambda function.
+  Create an AWS Lambda function and the corresponding CloudWatch Log Group.
 
 ## Terraform Remote Backend
 

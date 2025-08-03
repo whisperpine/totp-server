@@ -30,10 +30,11 @@ module "aws_common" {
   default_tags            = local.default_tags
 }
 
-# Create an AWS Lambda function.
+# Create an AWS Lambda function and the corresponding CloudWatch Log Group.
 module "aws_lambda" {
-  source         = "./aws-lambda"
-  function_name  = "totp-server-${terraform.workspace}"
-  zip_file_path  = "../target/lambda/totp-server/bootstrap.zip"
-  lambda_env_var = local.lambda_env_var
+  source             = "./aws-lambda"
+  function_name      = "totp-server-${terraform.workspace}"
+  zip_file_path      = "../target/lambda/totp-server/bootstrap.zip"
+  lambda_env_var     = local.lambda_env_var
+  log_retention_days = 7
 }
