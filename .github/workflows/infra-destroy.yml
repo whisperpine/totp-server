@@ -19,6 +19,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
+      - name: Create a mock artifact for bootstrap.zip
+        run: |
+          mkdir -p ../target/lambda/totp-server
+          touch ../target/lambda/totp-server/bootstrap.zip
       - name: Run OpenTofu commands
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -53,6 +57,10 @@ jobs:
         working-directory: ./infra # Set working directory for apply job.
     steps:
       - uses: actions/checkout@v4
+      - name: Create a mock artifact for bootstrap.zip
+        run: |
+          mkdir -p ../target/lambda/totp-server
+          touch ../target/lambda/totp-server/bootstrap.zip
       - name: Download encrypted plan artifact
         uses: actions/download-artifact@v4
         with:
