@@ -14,14 +14,18 @@
     deny(clippy::print_stdout, clippy::dbg_macro)
 )]
 
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+
 #[tokio::main]
 async fn main() {
     setup_panic_hook();
-    init_tracing_subscriber();
 
     if is_on_lambda() {
+        init_tracing_subscriber_lambda();
         totp_server::start_server_aws_lambda().await;
     } else {
+        init_tracing_subscriber();
         totp_server::start_server().await;
     }
 }
@@ -31,15 +35,27 @@ fn is_on_lambda() -> bool {
 }
 
 fn init_tracing_subscriber() {
-    use tracing_subscriber::layer::SubscriberExt;
-    use tracing_subscriber::util::SubscriberInitExt;
-
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
                 .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
         )
         .with(tracing_subscriber::fmt::layer())
+        .init();
+}
+
+fn init_tracing_subscriber_lambda() {
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
+        )
+        .with(
+            //
+            tracing_subscriber::fmt::layer()
+                .with_ansi(false) // There's decoding issue if ansi is enabled.
+                .without_time(), // Time info already exists in AWS CloudWatch Logs.
+        )
         .init();
 }
 
