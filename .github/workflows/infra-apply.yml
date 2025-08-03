@@ -13,9 +13,6 @@ on:
 jobs:
   build-lambda:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./infra
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust
