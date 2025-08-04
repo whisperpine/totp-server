@@ -8,6 +8,21 @@
 
 Time-based One-time Password (TOTP) web server.
 
+## Authenticator
+
+Assume that you have a TOTP client (e.g. Google Authenticator).
+
+- When running locally (e.g. by `just run`), or deployed by the container image,
+find QR code in the logs.
+- When running on AWS Lambda, the QR code isn't logged on AWS CloudWatch.
+In this case, entering a setup key in TOTP clients (e.g. Google Authenticator)
+is the only way. Get the setup key by the following command:
+
+```sh
+# replace `xxx` with `RAW_SECRET`
+echo "xxx" | base32 | tr -d '='
+```
+
 ## Deployment
 
 ### AWS Lambda
@@ -57,17 +72,4 @@ just watch
 # Send http request defined in a hurl file.
 # "Error: invalid TOTP" will occur unless the "token" field is set correctly.
 hurl ./hurl/totp.hurl
-```
-
-## Authenticator
-
-QRCode is much more user-friendly, which should be implemented later on.
-At the moment, enter a setup key in TOTP clients (e.g. Google Authenticator)
-is the only way to add a record.
-
-Get the setup key by the following command:
-
-```sh
-# replace `xxx` with `RAW_SECRET`
-echo "xxx" | base32 | tr -d '='
 ```

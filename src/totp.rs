@@ -17,7 +17,7 @@ const RAW_SECRET: &str = "RAW_SECRET";
 /// ```
 /// # use totp_rs::{Algorithm, TOTP};
 /// # let VEC_SECRET: Vec<u8> = vec![];
-/// let totp = TOTP::new(Algorithm::SHA1, 6, 1, 30, VEC_SECRET.clone());
+/// let totp = TOTP::new(Algorithm::SHA1, 6, 1, 30, VEC_SECRET.clone(), None, "".to_owned());
 /// ```
 ///
 /// # Panic
@@ -62,8 +62,16 @@ fn init_vec_secret() -> Vec<u8> {
 /// `digit` is set by [`TOKEN_DIGITS`], thus it's unlikely to be invalid.
 /// `secret` must have bitsize of at least 128 or it will panic.
 fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
-    TOTP::new(Algorithm::SHA1, TOKEN_DIGITS, 1, 30, secret.into())
-        .unwrap_or_else(|e| panic!("failed creating a new instance of TOTP: {e}"))
+    TOTP::new(
+        Algorithm::SHA1,
+        TOKEN_DIGITS,
+        1,
+        30,
+        secret.into(),
+        Some(crate::PKG_NAME.to_owned()),
+        "incognito".to_owned(),
+    )
+    .unwrap_or_else(|e| panic!("failed creating a new instance of TOTP: {e}"))
 }
 
 /// Try get totp token with raw secret.
@@ -116,9 +124,41 @@ pub(crate) async fn check_current(Json(input_token): Json<InputToken>) -> crate:
     }
 }
 
+/// Print the base32-endcode secret by [`tracing::info!()`].
+pub(crate) fn print_secret_base32() {
+    let totp = new_totp(VEC_SECRET.clone());
+    let secret_base32 = totp.get_secret_base32();
+    tracing::info!(%secret_base32);
+}
+
+/// Print the URL and QR Code to stdout.
+///
+/// # Panics
+///
+/// Panics if the QR code cannot be constructed (e.g. when the data is too long).
+pub(crate) fn print_qr_code() {
+    use qrcode::render::unicode;
+
+    let totp = new_totp(VEC_SECRET.clone());
+    let url = totp.get_url();
+    tracing::info!(%url);
+
+    let code = qrcode::QrCode::new(url)
+        .unwrap_or_else(|e| panic!("failed to convert the URL to QR code: {e}"));
+    let image = code
+        .render::<unicode::Dense1x2>()
+        .dark_color(unicode::Dense1x2::Light)
+        .light_color(unicode::Dense1x2::Dark)
+        .build();
+    tracing::info!("\n{image}");
+}
+
 #[cfg(test)]
 mod tests {
+    #![expect(unsafe_code)]
+
     use super::*;
+    use rstest::rstest;
 
     /// Get the current token.
     async fn get_token() -> crate::Result<Json<InputToken>> {
@@ -148,18 +188,32 @@ mod tests {
         let _ = *VEC_SECRET;
     }
 
-    #[test]
-    #[expect(unsafe_code)]
-    fn test_vec_secret_default_var() {
-        unsafe { std::env::set_var(RAW_SECRET, "^mzshbK&T6ng5hSNc6Lq$i") }
+    #[rstest]
+    #[case("H4bY!9MP8s5a#Cm4")]
+    #[case("^mzshbK&T6ng5hSNc6Lq$i")]
+    #[case("jG5t*qUztkV9!FA9YxDo4j7d%nLGiD!^")]
+    fn test_vec_secret_default_var(#[case] raw_secret: &str) {
+        unsafe { std::env::set_var(RAW_SECRET, raw_secret) }
         assert!(VEC_SECRET.len() >= 16);
     }
 
-    #[test]
+    #[rstest]
+    #[case("")]
+    #[case("ng5NcL$i")]
+    #[case("oUPH&eip*wC")]
     #[should_panic]
-    #[expect(unsafe_code)]
-    fn test_vec_secret_default_var_panic() {
-        unsafe { std::env::set_var(RAW_SECRET, "ng5NcL$i") }
+    fn test_vec_secret_default_var_panic(#[case] raw_secret: &str) {
+        unsafe { std::env::set_var(RAW_SECRET, raw_secret) }
         let _ = *VEC_SECRET;
+    }
+
+    #[test]
+    fn test_print_secret_base32() {
+        print_secret_base32();
+    }
+
+    #[test]
+    fn test_print_qr_code() {
+        print_qr_code();
     }
 }
