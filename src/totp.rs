@@ -17,7 +17,7 @@ const RAW_SECRET: &str = "RAW_SECRET";
 /// ```
 /// # use totp_rs::{Algorithm, TOTP};
 /// # let VEC_SECRET: Vec<u8> = vec![];
-/// let totp = TOTP::new(Algorithm::SHA1, 6, 1, 30, VEC_SECRET.clone());
+/// let totp = TOTP::new(Algorithm::SHA1, 6, 1, 30, VEC_SECRET.clone(), None, "".to_owned());
 /// ```
 ///
 /// # Panic
@@ -150,7 +150,7 @@ pub(crate) fn print_qr_code() {
         .dark_color(unicode::Dense1x2::Light)
         .light_color(unicode::Dense1x2::Dark)
         .build();
-    println!("\n{image}\n");
+    tracing::info!("\n{image}");
 }
 
 #[cfg(test)]
