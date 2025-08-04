@@ -16,6 +16,10 @@ cov:
 build:
     cargo lambda build --release
 
+# cargo nextest the given test case(s) and output logs
+t CASE:
+    cargo nextest run {{CASE}} --no-capture
+
 # boot the dev server locally that emulates AWS Lambda
 watch:
     RUST_LOG="cargo_lambda=info,totp_server=debug" \
