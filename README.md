@@ -13,10 +13,10 @@ Time-based One-time Password (TOTP) web server.
 Assume that you have a TOTP client (e.g. Google Authenticator).
 
 - When running locally (e.g. by `just run`), or deployed by the container image,
-find QR code in the logs.
+  find QR code in the logs.
 - When running on AWS Lambda, the QR code isn't logged on AWS CloudWatch.
-In this case, entering a setup key in TOTP clients (e.g. Google Authenticator)
-is the only way. Get the setup key by the following command:
+  In this case, entering a setup key in TOTP clients (e.g. Google Authenticator)
+  is the only way. Get the setup key by the following command:
 
 ```sh
 # replace `xxx` with `RAW_SECRET`
@@ -30,7 +30,7 @@ echo "xxx" | base32 | tr -d '='
 Any of the following approaches will deploy on AWS Lambda:
 
 - Trigger the GitHub Actions workflow [infra-apply.yml](https://github.com/whisperpine/totp-server/actions/workflows/infra-apply.yml)
-(recommended).
+  (recommended).
 - Run these command locally to deploy on AWS Lambda (*not* recommended):
 
 ```sh
