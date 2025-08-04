@@ -6,6 +6,9 @@ pub(crate) const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 /// Crate name.
 pub const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
 
+/// Package name.
+pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");
+
 /// Env var which is used to set [`RATE_LIMIT`]
 const REQUEST_RATE_LIMIT: &str = "REQUEST_RATE_LIMIT";
 
@@ -101,18 +104,14 @@ mod tests {
     #[case("333")]
     #[case("22")]
     fn test_rate_limit_var(#[case] value: &str) {
-        unsafe {
-            std::env::set_var(REQUEST_RATE_LIMIT, value);
-        }
+        unsafe { std::env::set_var(REQUEST_RATE_LIMIT, value) }
         assert_eq!(*RATE_LIMIT, value.parse::<u32>().unwrap());
     }
 
     #[test]
     #[should_panic]
     fn test_rate_limit_var_panic() {
-        unsafe {
-            std::env::set_var(REQUEST_RATE_LIMIT, "0");
-        }
+        unsafe { std::env::set_var(REQUEST_RATE_LIMIT, "0") }
         let _ = *RATE_LIMIT;
     }
 
@@ -128,9 +127,7 @@ mod tests {
     #[case("333")]
     #[case("22")]
     fn test_bind_port_var(#[case] port: &str) {
-        unsafe {
-            std::env::set_var(TCP_BIND_PORT, port);
-        }
+        unsafe { std::env::set_var(TCP_BIND_PORT, port) }
         assert_eq!(*BIND_PORT, port.parse::<u16>().unwrap());
     }
 
@@ -142,9 +139,13 @@ mod tests {
     #[case("65537")]
     #[should_panic]
     fn test_bind_port_var_panic(#[case] value: &str) {
-        unsafe {
-            std::env::set_var(TCP_BIND_PORT, value);
-        }
+        unsafe { std::env::set_var(TCP_BIND_PORT, value) }
         let _ = *BIND_PORT;
+    }
+
+    #[test]
+    fn test_cargo_name_pkg_name() {
+        assert_eq!(CRATE_NAME, "totp_server"); // underscore
+        assert_eq!(PKG_NAME, "totp-server"); // hyphen
     }
 }

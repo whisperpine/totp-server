@@ -14,7 +14,10 @@ pub async fn start_server() {
     use std::net::SocketAddr;
 
     tracing::info!("app version: {}", crate::PKG_VERSION);
+    // Check if required env vars have been set correctly.
     crate::env_var_check();
+    // Print the URL and QR Code to stdout.
+    crate::print_qr_code();
 
     let addr = SocketAddr::from(([0, 0, 0, 0], *crate::BIND_PORT));
     let listener = tokio::net::TcpListener::bind(addr)
