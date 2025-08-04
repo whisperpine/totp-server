@@ -13,8 +13,8 @@ Time-based One-time Password (TOTP) web server.
 Assume that you have a TOTP client (e.g. Google Authenticator).
 
 - When running locally (e.g. by `just run`), or deployed by the container image,
-find QR Code in the logs.
-- When running on AWS Lambda, the QRCode isn't logged on AWS CloudWatch.
+find QR code in the logs.
+- When running on AWS Lambda, the QR code isn't logged on AWS CloudWatch.
 In this case, entering a setup key in TOTP clients (e.g. Google Authenticator)
 is the only way. Get the setup key by the following command:
 
