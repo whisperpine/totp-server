@@ -70,6 +70,7 @@
               cargo-llvm-cov # LLVM source-based code coverage
               cargo-lambda # work with AWS Lambda
               bacon # background code checker
+              opentofu # alternative to terraform
               git-cliff # generate changelog
               just # just a command runner
               hurl # run and test HTTP requests with plain text
