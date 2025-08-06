@@ -1,4 +1,7 @@
-# TOTP Server
+<!-- markdownlint-disable MD033 -->
+<h1 align="center">TOTP Server</h1>
+
+<div align="center">
 
 [![license](https://img.shields.io/badge/MIT_OR_Apache--2.0-blue?label=license)](https://github.com/whisperpine/totp-server/blob/main/LICENSE-APACHE)
 [![checks](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/checks.yml?logo=github&label=checks)](https://github.com/whisperpine/totp-server/actions/workflows/checks.yml)
@@ -6,7 +9,25 @@
 [![codecov](https://codecov.io/gh/whisperpine/totp-server/graph/badge.svg?token=5PCNPENV26)](https://codecov.io/gh/whisperpine/totp-server)
 [![release](https://img.shields.io/github/v/release/whisperpine/totp-server)](https://github.com/whisperpine/totp-server/releases)
 
-Time-based One-time Password (TOTP) web server.
+Time-based One-time Password (TOTP) server.
+
+</div>
+<!-- markdownlint-enable MD033 -->
+
+## Background
+
+While developing a mobile game, I needed a way to include developer-only
+features, such as a console for viewing logs, in the production app without
+exposing them to regular users. Maintaining a separate "internal version" of the
+app would have slowed down our iteration process, so I sought a lightweight and
+secure solution. This led to the creation of totp-server.
+
+With totp-server, developer-only features are unlocked only after successful
+TOTP authentication. This approach eliminates the need to manage special
+permissions at the user-identity level (e.g., adding a "superuser" flag in the
+database). It's secure, cost-effective, and efficient, as developers can spin up
+the TOTP server in under a minute via CI/CD for debugging and tear it down when
+done.
 
 ## Authenticator
 
