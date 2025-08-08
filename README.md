@@ -7,7 +7,7 @@
 [![checks](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/checks.yml?logo=github&label=checks)](https://github.com/whisperpine/totp-server/actions/workflows/checks.yml)
 [![build](https://img.shields.io/github/actions/workflow/status/whisperpine/totp-server/build.yml?logo=github&label=build)](https://github.com/whisperpine/totp-server/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/whisperpine/totp-server/graph/badge.svg?token=5PCNPENV26)](https://codecov.io/gh/whisperpine/totp-server)
-[![release](https://img.shields.io/github/v/release/whisperpine/totp-server)](https://github.com/whisperpine/totp-server/releases)
+[![release](https://img.shields.io/github/v/release/whisperpine/totp-server?logo=github)](https://github.com/whisperpine/totp-server/releases)
 
 Time-based One-time Password (TOTP) server.
 
