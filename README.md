@@ -20,7 +20,7 @@ While developing a mobile game, I needed a way to include developer-only
 features, such as a console for viewing logs, in the production app without
 exposing them to regular users. Maintaining a separate "internal version" of the
 app would have slowed down our iteration process, so I sought a lightweight and
-secure solution. This led to the creation of totp-server.
+secure solution herein.
 
 With totp-server, developer-only features are unlocked only after successful
 TOTP authentication. This approach eliminates the need to manage special
