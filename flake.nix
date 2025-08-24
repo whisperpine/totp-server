@@ -69,6 +69,7 @@
               cargo-nextest # next-generation test runner
               cargo-llvm-cov # LLVM source-based code coverage
               cargo-lambda # work with AWS Lambda
+              cargo-flamegraph # performance profiling
               bacon # background code checker
               opentofu # alternative to terraform
               git-cliff # generate changelog
