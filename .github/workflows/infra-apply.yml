@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download the artifact bootstrap.zip
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: bootstrap
           path: ./target/lambda/totp-server
@@ -84,12 +84,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download the artifact bootstrap.zip
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: bootstrap
           path: ./target/lambda/totp-server
       - name: Download encrypted plan artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: tfplan-encrypted-${{ github.event.inputs.tf-workspace }}
           path: ${{ github.workspace }}/infra

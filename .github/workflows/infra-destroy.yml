@@ -62,7 +62,7 @@ jobs:
           mkdir -p ../target/lambda/totp-server
           touch ../target/lambda/totp-server/bootstrap.zip
       - name: Download encrypted plan artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: tfplan-destroy-encrypted-${{ github.event.inputs.tf-workspace }}
           path: ${{ github.workspace }}/infra
