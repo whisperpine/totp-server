@@ -72,8 +72,6 @@ pub(crate) fn app() -> axum::Router {
             tower::ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(timeout_error_handler))
                 .timeout(Duration::from_secs(1))
-                .layer(tower_governor::GovernorLayer {
-                    config: governor_conf,
-                }),
+                .layer(tower_governor::GovernorLayer::new(governor_conf)),
         )
 }
