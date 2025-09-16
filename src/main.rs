@@ -14,6 +14,7 @@
     deny(clippy::print_stdout, clippy::dbg_macro)
 )]
 
+use tracing_subscriber::filter::LevelFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -28,25 +29,6 @@ async fn main() {
         init_tracing_subscriber();
         totp_server::start_server().await;
     }
-}
-
-fn is_on_lambda() -> bool {
-    std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok()
-}
-
-fn init_tracing_subscriber_lambda() {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
-        )
-        .with(
-            //
-            tracing_subscriber::fmt::layer()
-                .with_ansi(false) // There's decoding issue if ansi is enabled.
-                .without_time(), // Time info already exists in AWS CloudWatch Logs.
-        )
-        .init();
 }
 
 /// Call this function in `main()` to setup panic hook.
@@ -71,15 +53,24 @@ fn setup_panic_hook() {
     }));
 }
 
-// fn init_tracing_subscriber() {
-//     tracing_subscriber::registry()
-//         .with(
-//             tracing_subscriber::EnvFilter::try_from_default_env()
-//                 .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
-//         )
-//         .with(tracing_subscriber::fmt::layer())
-//         .init();
-// }
+fn is_on_lambda() -> bool {
+    std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok()
+}
+
+fn init_tracing_subscriber_lambda() {
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or(format!("{}={}", totp_server::CRATE_NAME, LevelFilter::INFO).into()),
+        )
+        .with(
+            //
+            tracing_subscriber::fmt::layer()
+                .with_ansi(false) // There's decoding issue if ansi is enabled.
+                .without_time(), // Time info already exists in AWS CloudWatch Logs.
+        )
+        .init();
+}
 
 fn init_tracing_subscriber() {
     use opentelemetry::{KeyValue, global};
@@ -140,9 +131,6 @@ fn init_tracing_subscriber() {
         opentelemetry_appender_tracing::layer::OpenTelemetryTracingBridge::new(&provider)
     };
 
-    use tracing_subscriber::filter::LevelFilter;
-    use tracing_subscriber::layer::SubscriberExt;
-    use tracing_subscriber::util::SubscriberInitExt;
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
