@@ -77,6 +77,6 @@ fn setup_panic_hook() {
             });
 
         // Log the panic with structured fields.
-        tracing::error!(panic_message = message, location = location);
+        tracing::error!(location = location, "{message}");
     }));
 }
