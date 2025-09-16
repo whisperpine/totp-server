@@ -136,12 +136,13 @@ pub(crate) fn print_secret_base32() {
 /// # Panics
 ///
 /// Panics if the QR code cannot be constructed (e.g. when the data is too long).
+#[expect(clippy::print_stdout)]
 pub(crate) fn print_qr_code() {
     use qrcode::render::unicode;
 
     let totp = new_totp(VEC_SECRET.clone());
     let url = totp.get_url();
-    tracing::info!(%url);
+    println!("\n{url}");
 
     let code = qrcode::QrCode::new(url)
         .unwrap_or_else(|e| panic!("failed to convert the URL to QR code: {e}"));
@@ -150,7 +151,7 @@ pub(crate) fn print_qr_code() {
         .dark_color(unicode::Dense1x2::Light)
         .light_color(unicode::Dense1x2::Dark)
         .build();
-    tracing::info!("\n{image}");
+    println!("\n{image}");
 }
 
 #[cfg(test)]
