@@ -129,7 +129,6 @@ fn init_tracing_subscriber() {
     };
 
     let otel_log_layer = {
-        // let log_exporter = opentelemetry_stdout::LogExporter::default();
         let log_exporter = opentelemetry_otlp::LogExporter::builder()
             .with_tonic()
             .build()
