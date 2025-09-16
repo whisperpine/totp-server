@@ -34,16 +34,6 @@ fn is_on_lambda() -> bool {
     std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok()
 }
 
-fn init_tracing_subscriber() {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-}
-
 fn init_tracing_subscriber_lambda() {
     tracing_subscriber::registry()
         .with(
@@ -79,4 +69,89 @@ fn setup_panic_hook() {
         // Log the panic with structured fields.
         tracing::error!(location = location, "{message}");
     }));
+}
+
+// fn init_tracing_subscriber() {
+//     tracing_subscriber::registry()
+//         .with(
+//             tracing_subscriber::EnvFilter::try_from_default_env()
+//                 .unwrap_or_else(|_| format!("{}=info", totp_server::CRATE_NAME).into()),
+//         )
+//         .with(tracing_subscriber::fmt::layer())
+//         .init();
+// }
+
+fn init_tracing_subscriber() {
+    use opentelemetry::{KeyValue, global};
+    use opentelemetry_sdk::logs::SdkLoggerProvider;
+    use opentelemetry_sdk::metrics::SdkMeterProvider;
+    use opentelemetry_sdk::trace::SdkTracerProvider;
+    use opentelemetry_semantic_conventions as semcon;
+
+    let resource = opentelemetry_sdk::Resource::builder()
+        .with_attribute(KeyValue::new(
+            semcon::resource::SERVICE_NAME,
+            totp_server::CRATE_NAME,
+        ))
+        .with_attribute(KeyValue::new(
+            semcon::resource::SERVICE_VERSION,
+            totp_server::PKG_VERSION,
+        ))
+        .build();
+
+    let otel_trace_layer = {
+        let span_exporter = opentelemetry_otlp::SpanExporter::builder()
+            .with_tonic()
+            .build()
+            .unwrap();
+        let tracer_provider = SdkTracerProvider::builder()
+            .with_simple_exporter(span_exporter)
+            .with_resource(resource.clone())
+            .build();
+        global::set_tracer_provider(tracer_provider.clone());
+
+        use opentelemetry::trace::TracerProvider;
+        let tracer = tracer_provider.tracer(totp_server::CRATE_NAME);
+        tracing_opentelemetry::layer().with_tracer(tracer)
+    };
+
+    let otel_metrics_layer = {
+        let exporter = opentelemetry_otlp::MetricExporter::builder()
+            .with_tonic()
+            .build()
+            .unwrap();
+        let meter_provider = SdkMeterProvider::builder()
+            .with_periodic_exporter(exporter)
+            .with_resource(resource.clone())
+            .build();
+        global::set_meter_provider(meter_provider.clone());
+        tracing_opentelemetry::MetricsLayer::new(meter_provider)
+    };
+
+    let otel_log_layer = {
+        // let log_exporter = opentelemetry_stdout::LogExporter::default();
+        let log_exporter = opentelemetry_otlp::LogExporter::builder()
+            .with_tonic()
+            .build()
+            .unwrap();
+        let provider = SdkLoggerProvider::builder()
+            .with_simple_exporter(log_exporter)
+            .with_resource(resource.clone())
+            .build();
+        opentelemetry_appender_tracing::layer::OpenTelemetryTracingBridge::new(&provider)
+    };
+
+    use tracing_subscriber::filter::LevelFilter;
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::util::SubscriberInitExt;
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or(format!("{}={}", totp_server::CRATE_NAME, LevelFilter::INFO).into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .with(otel_trace_layer)
+        .with(otel_metrics_layer)
+        .with(otel_log_layer)
+        .init();
 }

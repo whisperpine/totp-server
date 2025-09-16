@@ -80,9 +80,15 @@ serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
 # async
 tokio = { version = "1.44.2", features = ["full"] }
-# log
+# logs, traces, metrics
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tracing-opentelemetry = "0.31.0"
+opentelemetry-appender-tracing = "0.30.1"
+opentelemetry-semantic-conventions = "0.30.0"
+opentelemetry-otlp = { version = "0.30.0", features = ["grpc-tonic"] }
+opentelemetry_sdk = "0.30.0"
+opentelemetry = "0.30.0"
 # utility
 totp-rs = { version = "5.7.0", features = ["otpauth"] }
 qrcode = { version = "0.14.1", default-features = false }
