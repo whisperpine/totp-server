@@ -91,6 +91,7 @@ async fn test_health() {
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.text().await.unwrap(), "200 OK");
     tx.send(()).unwrap();
     let _ = handle.await.unwrap();
 }

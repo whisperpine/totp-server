@@ -14,7 +14,7 @@ pub(crate) async fn handler_405() -> impl IntoResponse {
 
 /// Health check.
 pub(crate) async fn health() -> impl IntoResponse {
-    StatusCode::OK
+    (StatusCode::OK, "200 OK")
 }
 
 /// Sleep for given seconds.
