@@ -4,12 +4,12 @@ use axum::response::IntoResponse;
 
 /// Routing fallback.
 pub(crate) async fn handler_404() -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, "404 not found")
+    (StatusCode::NOT_FOUND, "404 Not Found")
 }
 
 /// Routing fallback.
-pub(crate) async fn handler_502() -> impl IntoResponse {
-    (StatusCode::BAD_GATEWAY, "Not a web service")
+pub(crate) async fn handler_405() -> impl IntoResponse {
+    (StatusCode::METHOD_NOT_ALLOWED, "405 Method Not Allowed")
 }
 
 /// Health check.

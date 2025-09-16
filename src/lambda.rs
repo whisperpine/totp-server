@@ -17,7 +17,7 @@ pub(crate) fn app_aws_lambda() -> axum::Router {
     use axum::routing::get;
 
     axum::Router::new()
-        .route("/", get(handler_502).post(check_current))
+        .route("/", get(handler_405).post(check_current))
         .route("/health", get(health))
         .fallback(handler_404)
         .layer(

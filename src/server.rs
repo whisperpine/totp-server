@@ -65,7 +65,7 @@ pub(crate) fn app() -> axum::Router {
     });
 
     axum::Router::new()
-        .route("/", get(handler_502).post(check_current))
+        .route("/", get(handler_405).post(check_current))
         .route("/health", get(health))
         .fallback(handler_404)
         .layer(

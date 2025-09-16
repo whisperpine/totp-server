@@ -55,15 +55,15 @@ async fn wait_until_ready(addr: SocketAddr) {
 }
 
 #[tokio::test]
-async fn test_handler_502() {
+async fn test_handler_405() {
     let (addr, tx, handle) = setup_server(app()).await;
     let response = reqwest::Client::new()
         .get(format!("http://{addr}"))
         .send()
         .await
         .unwrap();
-    assert_eq!(response.status(), StatusCode::BAD_GATEWAY);
-    assert_eq!(response.text().await.unwrap(), "Not a web service");
+    assert_eq!(response.status(), StatusCode::METHOD_NOT_ALLOWED);
+    assert_eq!(response.text().await.unwrap(), "405 Method Not Allowed");
     tx.send(()).unwrap();
     let _ = handle.await.unwrap();
 }
@@ -77,7 +77,7 @@ async fn test_handler_404() {
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
-    assert_eq!(response.text().await.unwrap(), "404 not found");
+    assert_eq!(response.text().await.unwrap(), "404 Not Found");
     tx.send(()).unwrap();
     let _ = handle.await.unwrap();
 }

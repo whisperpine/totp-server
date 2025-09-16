@@ -35,7 +35,7 @@ mod tests;
 pub(crate) use config::{BIND_PORT, PKG_VERSION, RATE_LIMIT, env_var_check};
 pub(crate) use service::timeout_error_handler;
 pub(crate) use totp::{VEC_SECRET, check_current, print_qr_code, print_secret_base32};
-pub(crate) use utils::{handler_404, handler_502, health};
+pub(crate) use utils::{handler_404, handler_405, health};
 
 pub use config::{CRATE_NAME, PKG_NAME};
 pub use error::{Error, Result};
