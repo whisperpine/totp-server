@@ -64,7 +64,6 @@ fn init_tracing_subscriber_lambda() {
                 .unwrap_or(format!("{}={}", totp_server::CRATE_NAME, LevelFilter::INFO).into()),
         )
         .with(
-            //
             tracing_subscriber::fmt::layer()
                 .with_ansi(false) // There's decoding issue if ansi is enabled.
                 .without_time(), // Time info already exists in AWS CloudWatch Logs.
@@ -94,7 +93,7 @@ fn init_tracing_subscriber() {
         let span_exporter = opentelemetry_otlp::SpanExporter::builder()
             .with_tonic()
             .build()
-            .unwrap();
+            .unwrap_or_else(|e| panic!("failed to build SpanExporter. error: {e}"));
         let tracer_provider = SdkTracerProvider::builder()
             .with_simple_exporter(span_exporter)
             .with_resource(resource.clone())
@@ -110,7 +109,7 @@ fn init_tracing_subscriber() {
         let exporter = opentelemetry_otlp::MetricExporter::builder()
             .with_tonic()
             .build()
-            .unwrap();
+            .unwrap_or_else(|e| panic!("failed to build MetricExporter. error: {e}"));
         let meter_provider = SdkMeterProvider::builder()
             .with_periodic_exporter(exporter)
             .with_resource(resource.clone())
@@ -123,7 +122,7 @@ fn init_tracing_subscriber() {
         let log_exporter = opentelemetry_otlp::LogExporter::builder()
             .with_tonic()
             .build()
-            .unwrap();
+            .unwrap_or_else(|e| panic!("failed to build LogExporter. error: {e}"));
         let provider = SdkLoggerProvider::builder()
             .with_simple_exporter(log_exporter)
             .with_resource(resource.clone())
