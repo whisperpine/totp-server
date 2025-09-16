@@ -95,7 +95,7 @@ fn init_tracing_subscriber() {
             .build()
             .unwrap_or_else(|e| panic!("failed to build SpanExporter. error: {e}"));
         let tracer_provider = SdkTracerProvider::builder()
-            .with_simple_exporter(span_exporter)
+            .with_batch_exporter(span_exporter)
             .with_resource(resource.clone())
             .build();
         global::set_tracer_provider(tracer_provider.clone());
@@ -124,7 +124,7 @@ fn init_tracing_subscriber() {
             .build()
             .unwrap_or_else(|e| panic!("failed to build LogExporter. error: {e}"));
         let provider = SdkLoggerProvider::builder()
-            .with_simple_exporter(log_exporter)
+            .with_batch_exporter(log_exporter)
             .with_resource(resource.clone())
             .build();
         opentelemetry_appender_tracing::layer::OpenTelemetryTracingBridge::new(&provider)
