@@ -16,36 +16,6 @@ lto = "thin"
 panic = "abort"
 strip = "symbols"
 
-[dev-dependencies]
-rstest = "0.26.1"
-
-[dev-dependencies.reqwest]
-version = "0.12.15"
-default-features = false
-features = ["http2", "charset", "rustls-tls", "json"]
-
-[dependencies]
-# web serivce
-axum = "0.8.3"
-tower_governor = "0.8.0"
-tower = { version = "0.5.0", features = ["timeout"] }
-lambda_http = "0.17.0"
-# error handling
-anyhow = "1.0.98"
-thiserror = "2.0.12"
-# serialization
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
-# async
-tokio = { version = "1.44.2", features = ["full"] }
-# log
-tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-# utility
-totp-rs = { version = "5.7.0", features = ["otpauth"] }
-qrcode = { version = "0.14.1", default-features = false }
-rand = "0.9.1"
-
 # rustc lints (https://doc.rust-lang.org/rustc/lints/index.html)
 [lints.rust]
 # lint groups (https://doc.rust-lang.org/rustc/lints/groups.html)
@@ -87,3 +57,33 @@ empty_enum = "warn"
 linkedlist = "warn"
 mem_forget = "warn"
 exit = "warn"
+
+[dev-dependencies]
+rstest = "0.26.1"
+
+[dev-dependencies.reqwest]
+version = "0.12.15"
+default-features = false
+features = ["http2", "charset", "rustls-tls", "json"]
+
+[dependencies]
+# web serivce
+axum = "0.8.3"
+tower_governor = "0.8.0"
+tower = { version = "0.5.0", features = ["timeout"] }
+lambda_http = "0.17.0"
+# error handling
+anyhow = "1.0.98"
+thiserror = "2.0.12"
+# serialization
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+# async
+tokio = { version = "1.44.2", features = ["full"] }
+# log
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+# utility
+totp-rs = { version = "5.7.0", features = ["otpauth"] }
+qrcode = { version = "0.14.1", default-features = false }
+rand = "0.9.1"
