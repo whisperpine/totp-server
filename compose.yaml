@@ -1,0 +1,10 @@
+# Assist local testing with otel-lgtm.
+# This is intended to be used in dev environment.
+services:
+  otel-lgtm:
+    image: grafana/otel-lgtm
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+      - 4317:4317
+      - 4318:4318
