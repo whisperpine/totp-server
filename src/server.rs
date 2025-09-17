@@ -70,8 +70,11 @@ pub(crate) fn app() -> axum::Router {
         .fallback(handler_404)
         .layer(
             tower::ServiceBuilder::new()
+                // Handle timeout error.
                 .layer(HandleErrorLayer::new(timeout_error_handler))
+                // Handle timeout.
                 .timeout(Duration::from_secs(1))
+                // Handle request rate limits.
                 .layer(tower_governor::GovernorLayer::new(governor_conf)),
         )
 }

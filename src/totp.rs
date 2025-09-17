@@ -108,8 +108,9 @@ impl InputToken {
 }
 
 /// Check if the given token is valid.
+#[tracing::instrument]
 pub(crate) async fn check_current(Json(input_token): Json<InputToken>) -> crate::Result<()> {
-    tracing::debug!(?input_token);
+    tracing::debug!("{input_token:?}");
     let token = input_token.token;
     if token.len() != TOKEN_DIGITS || token.parse::<u32>().is_err() {
         return Err(crate::Error::TotpInvalidFormat);
