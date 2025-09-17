@@ -42,7 +42,6 @@ pub(crate) fn app() -> axum::Router {
     use crate::*;
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
-    use axum_tracing_opentelemetry::middleware::{OtelAxumLayer, OtelInResponseLayer};
     use std::time::Duration;
 
     // Configure the rate limiter.
@@ -71,10 +70,6 @@ pub(crate) fn app() -> axum::Router {
         .fallback(handler_404)
         .layer(
             tower::ServiceBuilder::new()
-                // Start OpenTelemetry trace on incoming request.
-                .layer(OtelAxumLayer::default())
-                // Include trace context as header into the response.
-                .layer(OtelInResponseLayer)
                 // Handle timeout error.
                 .layer(HandleErrorLayer::new(timeout_error_handler))
                 // Handle timeout.
