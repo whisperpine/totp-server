@@ -59,7 +59,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: type=sha,prefix=,format=short
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.33.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           severity: CRITICAL,HIGH,MEDIUM
