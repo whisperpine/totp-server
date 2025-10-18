@@ -74,6 +74,7 @@
               opentofu # alternative to terraform
               git-cliff # generate changelog
               just # just a command runner
+              sops # simple tool for managing secrets
               hurl # run and test HTTP requests with plain text
               trivy # find vulnerabilities and misconfigurations
             ];
