@@ -90,7 +90,7 @@ jobs:
         shell: nix shell nixpkgs#cargo-lambda --quiet --command bash {0}
         run: cargo lambda build --release
       - name: Upload the artifact bootstrap.zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bootstrap
           path: ./target/lambda/totp-server/bootstrap.zip
