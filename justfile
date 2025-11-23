@@ -1,3 +1,7 @@
+# list all available subcommands
+_default:
+  @just --list
+
 # run totp-server with "debug" log level
 run:
   RUST_LOG="totp_server=debug" \
