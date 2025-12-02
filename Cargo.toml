@@ -71,7 +71,7 @@ features = ["http2", "charset", "rustls-tls", "json"]
 axum = "0.8.3"
 tower_governor = "0.8.0"
 tower = { version = "0.5.0", features = ["timeout"] }
-lambda_http = "0.17.0"
+lambda_http = "1.0.0"
 # error handling
 anyhow = "1.0.98"
 thiserror = "2.0.12"
