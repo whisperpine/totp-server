@@ -9,7 +9,7 @@ jobs:
     name: preview changelog
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all history.
           filter: blob:none

@@ -24,7 +24,7 @@ jobs:
   build-lambda:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -50,7 +50,7 @@ jobs:
       run:
         working-directory: ./infra
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Download the artifact bootstrap.zip
         uses: actions/download-artifact@v6
         with:
@@ -93,7 +93,7 @@ jobs:
       run:
         working-directory: ./infra
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Download the artifact bootstrap.zip
         uses: actions/download-artifact@v6
         with:
