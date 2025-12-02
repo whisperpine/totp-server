@@ -17,7 +17,7 @@ jobs:
       run:
         working-directory: ./infra # Set working directory for apply job.
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: opentofu/setup-opentofu@v1
       - name: Create a mock artifact for bootstrap.zip
         run: |
@@ -56,7 +56,7 @@ jobs:
       run:
         working-directory: ./infra # Set working directory for apply job.
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Create a mock artifact for bootstrap.zip
         run: |
           mkdir -p ../target/lambda/totp-server
