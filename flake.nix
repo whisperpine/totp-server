@@ -80,7 +80,7 @@
               trivy # find vulnerabilities and misconfigurations
             ];
             # The shell script executed when the environment is activated.
-            shellHook = ''
+            shellHook = /* sh */ ''
               # Print the last modified date of "flake.lock".
               git log -1 --format="%cd" --date=format:"%Y-%m-%d" -- flake.lock |
                 awk '{printf "\"flake.lock\" last modified on: %s", $1}' &&
