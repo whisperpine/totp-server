@@ -50,7 +50,7 @@
           #   ];
           #   targets = [ "aarch64-unknown-linux-gnu" ];
           # };
-          rust.nightly."2025-10-29".default.override {
+          rust.nightly."2026-01-12".default.override {
             extensions = [
               "rust-src"
               "llvm-tools" # required by cargo-llvm-cov
