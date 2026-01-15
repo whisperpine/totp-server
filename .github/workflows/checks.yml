@@ -126,3 +126,15 @@ jobs:
       - name: Run tflint command
         shell: nix shell nixpkgs#tflint --quiet --command bash {0}
         run: tflint --chdir ./infra --recursive
+
+  tofu-fmt:
+    runs-on: ubuntu-latest
+    name: check formatting of opentofu
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - uses: actions/checkout@v6
+      - uses: opentofu/setup-opentofu@v1
+      - name: Run OpenTofu commands
+        run: tofu fmt -check -diff -recursive
