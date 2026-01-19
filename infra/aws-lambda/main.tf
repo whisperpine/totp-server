@@ -8,6 +8,10 @@ terraform {
   }
 }
 
+# ------- #
+# AWS IAM
+# ------- #
+
 # IAM Role for Lambda.
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
 resource "aws_iam_role" "lambda_role" {
@@ -32,7 +36,10 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Lambda Function.
+# --------------- #
+# Lambda Function
+# --------------- #
+
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
 resource "aws_lambda_function" "default" {
   function_name = var.function_name
@@ -55,12 +62,37 @@ resource "aws_lambda_function" "default" {
   depends_on = [aws_cloudwatch_log_group.default]
 }
 
+# ----------------- #
+# Public Invocation
+# ----------------- #
+
+# Allows public invocation of the function.
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission
+resource "aws_lambda_permission" "allow_public_invocation" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.default.function_name
+  principal     = "*" # anyone (public)
+}
+
+# Allows public invocation of the function via its Function URL.
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission
+resource "aws_lambda_permission" "allow_public_function_url" {
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.default.function_name
+  principal              = "*"    # anyone (public)
+  function_url_auth_type = "NONE" # must match your function URL auth type
+}
+
 # Lambda Function URL.
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function_url
 resource "aws_lambda_function_url" "default" {
   function_name      = aws_lambda_function.default.function_name
-  authorization_type = "NONE" # Public access.
+  authorization_type = "NONE" # public access
 }
+
+# ---------- #
+# CloudWatch
+# ---------- #
 
 # CloudWatch Log Group.
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group
