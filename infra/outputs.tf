@@ -1,6 +1,6 @@
-# --------------------
+# ------------------ #
 # module: aws_lambda
-# --------------------
+# ------------------ #
 
 output "lambda_function_url" {
   description = "the url of the aws lambda function"

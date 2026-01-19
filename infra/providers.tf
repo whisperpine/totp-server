@@ -1,5 +1,5 @@
 terraform {
-  # s3 backend docs:
+  # S3 backend docs:
   # https://developer.hashicorp.com/terraform/language/backend/s3
   backend "s3" {
     bucket                      = "tf-states"
@@ -15,7 +15,7 @@ terraform {
     use_lockfile                = true
   }
 
-  # version constraints docs:
+  # Version constraints docs:
   # https://developer.hashicorp.com/terraform/language/expressions/version-constraints
   required_version = ">= 1.10"
   required_providers {
@@ -30,11 +30,11 @@ terraform {
   }
 }
 
-# carlpett/sops provider docs: 
+# Provider "carlpett/sops" docs:
 # https://registry.terraform.io/providers/carlpett/sops/latest/docs
 provider "sops" {}
 
-# hashicorp/aws provider docs:
+# Provider "hashicorp/aws" docs:
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 provider "aws" {
   region     = local.aws_provider_region

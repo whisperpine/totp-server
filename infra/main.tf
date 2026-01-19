@@ -1,21 +1,20 @@
-# sops_file data docs:
 # https://registry.terraform.io/providers/carlpett/sops/latest/docs/data-sources/file
 data "sops_file" "default" {
   source_file = "encrypted.${terraform.workspace}.json"
 }
 
 locals {
-  # tags for hashicorp/aws provider
+  # Tags for hashicorp/aws provider.
   repository = "totp-server"
   default_tags = {
     tf-workspace  = terraform.workspace
     tf-repository = local.repository
   }
-  # provider: hashicorp/aws 
+  # Provider: hashicorp/aws.
   aws_provider_region   = data.sops_file.default.data["aws_provider_region"]
   aws_access_key_id     = data.sops_file.default.data["aws_access_key_id"]
   aws_secret_access_key = data.sops_file.default.data["aws_secret_access_key"]
-  # module: aws-lambda
+  # Module: aws-lambda.
   totp_server_raw_secret = data.sops_file.default.data["totp_server_raw_secret"]
   lambda_env_var = {
     RUST_LOG   = "totp_server=info"

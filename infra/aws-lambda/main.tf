@@ -40,7 +40,7 @@ resource "aws_lambda_function" "default" {
   handler       = "bootstrap"       # Function entry point in your code. Required if package_type is Zip.
   runtime       = "provided.al2023" # Identifier of the function's runtime. Required if package_type is Zip.
   architectures = ["arm64"]         # Graviton support for better price/performance.
-  memory_size   = 128               # Valid value between 128 MB to 10,240 MB (10 GB), in 1 MB increments. 
+  memory_size   = 128               # Valid value between 128 MB to 10,240 MB (10 GB), in 1 MB increments.
   timeout       = 1                 # Amount of time your Lambda Function has to run in seconds.
   # Path to the function's deployment package within the local filesystem.
   # One of "filename", "image_uri", or "s3_bucket" must be specified.
@@ -55,14 +55,14 @@ resource "aws_lambda_function" "default" {
   depends_on = [aws_cloudwatch_log_group.default]
 }
 
-# Lambda Function URL
+# Lambda Function URL.
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function_url
 resource "aws_lambda_function_url" "default" {
   function_name      = aws_lambda_function.default.function_name
   authorization_type = "NONE" # Public access.
 }
 
-# CloudWatch Log Group
+# CloudWatch Log Group.
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group
 resource "aws_cloudwatch_log_group" "default" {
   name              = "/aws/lambda/${var.function_name}"
