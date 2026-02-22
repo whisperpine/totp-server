@@ -20,9 +20,9 @@ pub enum Error {
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
+        type E = crate::Error;
         tracing::error!("{self}");
         let msg = format!("Error: {self}");
-        type E = crate::Error;
         match self {
             E::TotpInvalid => (StatusCode::UNAUTHORIZED, msg).into_response(),
             E::TotpInvalidFormat => (StatusCode::BAD_REQUEST, msg).into_response(),
