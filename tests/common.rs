@@ -37,7 +37,7 @@ pub(crate) fn get_random_secret() -> String {
 
 pub(crate) fn get_random_6_digits() -> String {
     let width = 6;
-    let number = rand::random_range(0..=999999);
+    let number = rand::random_range(0..=999_999);
     format!("{number:0>width$}")
 }
 

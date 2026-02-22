@@ -1,6 +1,10 @@
 /// Starts the HTTP server for the TOTP service (AWS Lambda).
+///
+/// # Panics
+///
+/// It panics if fails to start the Lambda Rust runtime.
 pub async fn start_server_aws_lambda() {
-    tracing::info!("app version: {}", crate::PKG_VERSION);
+    tracing::info!("App version: {}.", crate::PKG_VERSION);
     // Check if required env vars have been set correctly.
     let _ = crate::VEC_SECRET.clone();
     // Print the base32-encoded secret.
@@ -8,11 +12,11 @@ pub async fn start_server_aws_lambda() {
     // Start the server by `lambda_http::run`, which differs from `axum::serve`.
     lambda_http::run(app_aws_lambda())
         .await
-        .unwrap_or_else(|e| panic!("failed to start lambda_http server. error: {e}"));
+        .unwrap_or_else(|e| panic!("Failed to start lambda_http server. Error: {e}."));
 }
 
 pub(crate) fn app_aws_lambda() -> axum::Router {
-    use crate::*;
+    use crate::{check_current, handler_404, handler_405, health, timeout_error_handler};
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
 

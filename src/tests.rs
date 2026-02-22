@@ -117,7 +117,7 @@ async fn test_totp_invalid_format(#[case] false_token: &str) {
 #[tokio::test]
 async fn test_token_checker_incorrect() {
     let (addr, tx, handle) = setup_server(app()).await;
-    let false_token = format!("{:0>6}", rand::random_range(0..=999999));
+    let false_token = format!("{:0>6}", rand::random_range(0..=999_999));
     let response = reqwest::Client::new()
         .post(format!("http://{addr}"))
         .json(&crate::InputToken::new(false_token))

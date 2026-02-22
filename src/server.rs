@@ -13,7 +13,7 @@
 pub async fn start_server() {
     use std::net::SocketAddr;
 
-    tracing::info!("app version: {}", crate::PKG_VERSION);
+    tracing::info!("App version: {}.", crate::PKG_VERSION);
     // Check if required env vars have been set correctly.
     crate::env_var_check();
     // Print the URL and QR Code to stdout.
@@ -22,15 +22,15 @@ pub async fn start_server() {
     let addr = SocketAddr::from(([0, 0, 0, 0], *crate::BIND_PORT));
     let listener = tokio::net::TcpListener::bind(addr)
         .await
-        .unwrap_or_else(|e| panic!("failed to bind SocketAddr: {addr}. error: {e}"));
-    tracing::info!("listening at http://localhost:{}", addr.port());
+        .unwrap_or_else(|e| panic!("Failed to bind SocketAddr: {addr}. Error: {e}."));
+    tracing::info!("Listening at http://localhost:{}.", addr.port());
 
     axum::serve(
         listener,
         app().into_make_service_with_connect_info::<SocketAddr>(),
     )
     .await
-    .unwrap_or_else(|e| panic!("failed to start axum server. error: {e}"));
+    .unwrap_or_else(|e| panic!("Failed to start axum server. Error: {e}."));
 }
 
 /// Configures and returns the Axum router for the TOTP service.
@@ -39,7 +39,7 @@ pub async fn start_server() {
 ///
 /// An [`axum::Router`] configured with routes and middleware for the TOTP service.
 pub(crate) fn app() -> axum::Router {
-    use crate::*;
+    use crate::{check_current, handler_404, handler_405, health, timeout_error_handler};
     use axum::error_handling::HandleErrorLayer;
     use axum::routing::get;
     use std::time::Duration;
@@ -50,7 +50,7 @@ pub(crate) fn app() -> axum::Router {
             .per_second(30)
             .burst_size(*crate::RATE_LIMIT)
             .finish()
-            .expect("failed to configure tower_governor"),
+            .expect("Failed to configure tower_governor."),
     );
 
     let governor_limiter = governor_conf.limiter().clone();
@@ -59,7 +59,7 @@ pub(crate) fn app() -> axum::Router {
     tokio::spawn(async move {
         loop {
             tokio::time::sleep(interval).await;
-            tracing::trace!("rate limiting storage size: {}", governor_limiter.len());
+            tracing::trace!("Rate limiting storage size: {}.", governor_limiter.len());
             governor_limiter.retain_recent();
         }
     });

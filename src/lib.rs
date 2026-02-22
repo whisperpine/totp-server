@@ -18,7 +18,7 @@ mod config;
 mod error;
 /// AWS Lambda
 mod lambda;
-/// The entry point of totp_server library.
+/// The entry point of [`totp_server`] library.
 mod server;
 /// Converts [`tower::Service`] inner errors into [`axum::response::IntoResponse`].
 mod service;
