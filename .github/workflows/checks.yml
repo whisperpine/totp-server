@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run Trivy vulnerability scanner in repo mode
-        shell: nix shell nixpkgs#typos --quiet --command bash {0}
+        shell: nix shell nixpkgs#trivy --quiet --command bash {0}
         run: |
           trivy --quiet fs . \
             --output trivy-fs-results.sarif \
