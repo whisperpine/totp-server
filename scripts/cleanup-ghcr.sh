@@ -42,14 +42,17 @@ else
   exit 1
 fi
 
+# Gets all package versions within the given page.
 get_versions() {
+  page="$1"
   curl -s -L \
     -H "Authorization: Bearer ${GITHUB_TOKEN}" \
     -H "Accept: application/vnd.github+json" \
     -H "X-GitHub-Api-Version: 2026-03-10" \
-    "$endpoint" | jq -c '.[]'
+    "$endpoint?per_page=100&&page=$page" | jq -c '.[]'
 }
 
+# Deletes a package with the given id.
 delete_version() {
   id="$1"
   curl -s -L -X DELETE \
@@ -59,23 +62,37 @@ delete_version() {
     "${endpoint}/${id}"
 }
 
-# Remove all packages that don't match the regex.
-get_versions | while read -r version; do
-  id=$(echo "$version" | jq -r '.id')
-  tags=$(echo "$version" | jq -r '.metadata.container.tags[]')
+# Removes all packages that don't match the regex.
+delete_in_batch() {
+  versions="$1"
+  echo "$versions" | while read -r version; do
+    id=$(echo "$version" | jq -r '.id')
+    tags=$(echo "$version" | jq -r '.metadata.container.tags[]')
 
-  keep=0
-  for tag in $tags; do
-    if [[ "$tag" =~ $regex_to_keep ]]; then
+    keep=0
+    for tag in $tags; do
+      if [[ "$tag" =~ $regex_to_keep ]]; then
+        keep=1
+      fi
+    done
+    # Keep untagged packages (which may be the manifests referred by an image).
+    if [ -z "$tags" ]; then
       keep=1
     fi
-  done
-  # Keep untagged packages (which may be the manifests referred by an image).
-  if [ -z "$tags" ]; then
-    keep=1
-  fi
 
-  if [[ "$keep" == 0 ]]; then
-    delete_version "$id"
+    if [[ "$keep" == 0 ]]; then
+      delete_version "$id"
+    fi
+  done
+}
+
+count=0
+while [ "$count" -lt 10000 ]; do
+  echo "Cleaning up on page: $count."
+  versions=$(get_versions "$count")
+  if [ -z "$versions" ]; then
+    break
   fi
+  delete_in_batch "$versions"
+  count=$((count + 1))
 done
