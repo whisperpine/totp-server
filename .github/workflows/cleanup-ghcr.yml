@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v6
       - name: Cleanup container images in ghcr
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          OWNER: "${{ github.repository_owner }}"
-          PACKAGE_NAME: "tt-http-app"
-          ORG_OR_USER: "user"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          PACKAGE_NAME: totp-server
+          ORG_OR_USER: user
         run: bash ./scripts/cleanup-ghcr.sh
