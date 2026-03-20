@@ -54,7 +54,7 @@ pub(crate) fn app() -> axum::Router {
     );
 
     let governor_limiter = governor_conf.limiter().clone();
-    let interval = Duration::from_secs(60);
+    let interval = Duration::from_mins(1);
     // A separate background task to clean up.
     tokio::spawn(async move {
         loop {
