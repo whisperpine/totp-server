@@ -1,0 +1,21 @@
+name: Cleanup GHCR
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs every Saturday at 05:15.
+    - cron: "15 5 * * 6"
+
+jobs:
+  delete-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Cleanup container images in ghcr
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          OWNER: "${{ github.repository_owner }}"
+          PACKAGE_NAME: "tt-http-app"
+          ORG_OR_USER: "user"
+        run: bash ./scripts/cleanup-ghcr.sh
