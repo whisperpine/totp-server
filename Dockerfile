@@ -42,7 +42,7 @@ COPY --link . .
 RUN --mount=type=cache,target=./target/,id=rust-cache-${APP_NAME}-${TARGETPLATFORM} \
     --mount=type=cache,target=/usr/local/cargo/registry,readonly \
     --mount=type=cache,target=/usr/local/cargo/git/db,readonly \
-    xx-cargo build --release --offline --target-dir ./target && \
+    xx-cargo build --release --target-dir ./target && \
     xx-verify --static ./target/$(xx-cargo --print-target-triple)/release/${APP_NAME} && \
     cp ./target/$(xx-cargo --print-target-triple)/release/${APP_NAME} /app/${TARGETPLATFORM}
 
