@@ -18,12 +18,13 @@ jobs:
         working-directory: ./infra # Set working directory for apply job.
     steps:
       - uses: actions/checkout@v6
-      - uses: opentofu/setup-opentofu@v2
       - name: Create a mock artifact for bootstrap.zip
         run: |
           mkdir -p ../target/lambda/totp-server
           touch ../target/lambda/totp-server/bootstrap.zip
+      - uses: cachix/install-nix-action@v31
       - name: Run OpenTofu commands
+        shell: nix shell nixpkgs#opentofu --quiet --command bash {0}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -33,7 +34,6 @@ jobs:
           tofu validate
           tofu workspace select ${{ github.event.inputs.tf-workspace }}
           tofu plan -destroy -out=tfplan
-      - uses: cachix/install-nix-action@v31
       - name: Encrypt OpenTofu plan file
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
@@ -72,8 +72,8 @@ jobs:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         shell: nix shell nixpkgs#sops --quiet --command bash {0}
         run: sops decrypt --output tfplan tfplan-encrypted
-      - uses: opentofu/setup-opentofu@v2
       - name: Run OpenTofu commands
+        shell: nix shell nixpkgs#opentofu --quiet --command bash {0}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
