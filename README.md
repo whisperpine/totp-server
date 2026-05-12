@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD033 -->
 <h1 align="center">TOTP Server</h1>
 
 <div align="center">
@@ -72,7 +71,7 @@ services:
     ports: ["9000:9000"]
     environment:
       RUST_LOG: totp_server=info # trace, debug, info (default), warn, error.
-      RAW_SECRET: "xxx" # Required: It should be at least 16 chars. 
+      RAW_SECRET: "xxx" # Required: It should be at least 16 chars.
       TCP_BIND_PORT: 9000 # Optional: TCP port (default: 9000).
       REQUEST_RATE_LIMIT: 25 # Optional: Rate limit per 30 seconds (default: 25).
 ```

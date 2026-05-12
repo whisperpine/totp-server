@@ -29,8 +29,8 @@ For example, if the semver is `1.2.3`, the corresponding git tag should be `v1.2
   "chore(release): prepare for v1.2.3".
   - Update package versions in the RP (e.g. `cargo set-version --bump minor`).
 - When the RP has been merged, push a corresponding git tag (e.g. `v1.2.3`).
-  - The GitHub Actions workflow [release.yml](./.github/workflows/release.yml)
-    and [build.yml](./.github/workflows/build.yml)
+  - The GitHub Actions workflow [release.yml](../.github/workflows/release.yml)
+    and [build.yml](../.github/workflows/build.yml)
     will be triggered by the git tag.
   - The release.yml will generate release notes by git-cliff and create a prerelease.
   - the build.yml will build and push container images tagged by the semantic version.

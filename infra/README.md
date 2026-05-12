@@ -51,7 +51,7 @@ to learn how to use each output.
 ```sh
 cd INFRA_DIR
 # List all outputs with value masked by <sensitive>.
-tofu output 
+tofu output
 # Get the value by their explicit names. For example:
 tofu output lambda_function_url
 ```
