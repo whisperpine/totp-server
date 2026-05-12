@@ -65,8 +65,18 @@
           default = pkgs.mkShellNoCC {
             # The Nix packages installed in the dev environment.
             packages = with pkgs; [
+              # --- common --- #
               rumdl # markdown linter
+              prek # better pre-commit
+              typos # check misspelling
               cocogitto # conventional commit toolkit
+              git-cliff # generate changelog
+              just # just a command runner
+              sops # simple tool for managing secrets
+              trivy # find vulnerabilities and misconfigurations
+              hurl # run and test HTTP requests with plain text
+
+              # --- rust --- #
               rustToolchain
               cargo-edit # managing cargo dependencies
               cargo-nextest # next-generation test runner
@@ -74,12 +84,9 @@
               cargo-lambda # work with AWS Lambda
               cargo-flamegraph # performance profiling
               bacon # background code checker
+
+              # --- infra --- #
               opentofu # alternative to terraform
-              git-cliff # generate changelog
-              just # just a command runner
-              sops # simple tool for managing secrets
-              hurl # run and test HTTP requests with plain text
-              trivy # find vulnerabilities and misconfigurations
             ];
             # The shell script executed when the environment is activated.
             shellHook = /* sh */ ''
@@ -87,6 +94,8 @@
               git log -1 --format="%cd" --date=format:"%Y-%m-%d" -- flake.lock |
                 awk '{printf "\"flake.lock\" last modified on: %s", $1}' &&
                 echo " ($((($(date +%s) - $(git log -1 --format="%ct" -- flake.lock)) / 86400)) days ago)"
+              # Install git hooks managed by prek.
+              prek install --quiet
             '';
           };
         }
