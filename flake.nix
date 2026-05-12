@@ -65,6 +65,7 @@
           default = pkgs.mkShellNoCC {
             # The Nix packages installed in the dev environment.
             packages = with pkgs; [
+              cocogitto # conventional commit toolkit
               rustToolchain
               cargo-edit # managing cargo dependencies
               cargo-nextest # next-generation test runner

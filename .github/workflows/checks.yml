@@ -16,6 +16,18 @@ jobs:
         shell: nix shell nixpkgs#typos --quiet --command bash {0}
         run: typos --hidden --exclude .git --format brief
 
+  cocogitto:
+    name: check conventional commits
+    runs-on: ubuntu-latest
+    # Only run this step in the main branch.
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+      - name: Check the latest commit message
+        shell: nix shell nixpkgs#cocogitto --quiet --command bash {0}
+        run: cog check HEAD..HEAD
+
   trivy-scan:
     name: use trivy to scan files
     runs-on: ubuntu-latest
