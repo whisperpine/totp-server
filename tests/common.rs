@@ -56,8 +56,7 @@ async fn wait_until_ready(port: u16) {
                 .get(format!("http://localhost:{port}/health"))
                 .send()
                 .await
-                .map(|res| res.status().is_success())
-                .unwrap_or(false)
+                .is_ok_and(|res| res.status().is_success())
             {
                 break;
             }
