@@ -87,7 +87,10 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Run cargo clippy
         # The `-- -D warnings` flag treats all warnings as errors.
-        run: cargo clippy --release -- -D warnings
+        run: |
+          cargo clippy --release -- -D warnings
+          cargo clippy --examples --release -- -D warnings
+          cargo clippy --tests -- -D warnings
 
   cargo-doc:
     runs-on: ubuntu-latest
