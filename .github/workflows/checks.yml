@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: check misspelling by typos
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Run typos command
         shell: nix shell nixpkgs#typos --quiet --command bash {0}
@@ -22,7 +22,7 @@ jobs:
     # Only run this step in the main branch.
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Check the latest commit message
         shell: nix shell nixpkgs#cocogitto --quiet --command bash {0}
@@ -32,7 +32,7 @@ jobs:
     name: lint markdown by rumdl
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Run rumdl command
         shell: nix shell nixpkgs#rumdl --quiet --command bash {0}
@@ -44,7 +44,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Run Trivy vulnerability scanner in repo mode
         shell: nix shell nixpkgs#trivy --quiet --command bash {0}
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     name: lint rust code by clippy
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     name: lint rust docstring by rustdoc
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -112,7 +112,7 @@ jobs:
     name: check rust formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     name: tests and code coverage
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     name: lint opentofu code by tflint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Run tflint command
         shell: nix shell nixpkgs#tflint --quiet --command bash {0}
@@ -160,7 +160,7 @@ jobs:
       run:
         working-directory: ./infra
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
       - name: Run OpenTofu commands
         shell: nix shell nixpkgs#opentofu --quiet --command bash {0}
