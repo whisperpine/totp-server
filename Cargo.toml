@@ -76,7 +76,7 @@ exit = "warn"
 # ---------------- #
 
 [dev-dependencies]
-rstest = "0.26.1"
+rstest = "0.27.0"
 reqwest = { version = "0.13.1", features = ["json"] }
 anyhow = "1.0.98"
 
