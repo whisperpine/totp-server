@@ -82,10 +82,10 @@ fn new_totp(secret: impl Into<Vec<u8>>) -> Totp {
 /// # Example
 ///
 /// ```
-/// use totp_server::try_get_token;
+/// use totp_server::get_current_token;
 /// let vec = "999a999a999a999a".as_bytes();
 /// assert!(vec.len() >= 16);
-/// let token = try_get_token(&vec);
+/// let token = get_current_token(&vec);
 /// # let _ = token;
 /// ```
 ///
