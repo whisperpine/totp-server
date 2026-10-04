@@ -89,7 +89,7 @@ pub(crate) async fn setup() -> (Child, String, u16) {
     let port = get_available_port();
     let child = spawn_totp_process(&raw_secret, port);
 
-    let token = totp_server::try_get_token(raw_secret.as_bytes()).unwrap();
+    let token = totp_server::get_current_token(raw_secret.as_bytes());
     wait_until_ready(port).await;
 
     (child, token, port)

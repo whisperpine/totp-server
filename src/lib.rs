@@ -39,4 +39,4 @@ pub use config::{CRATE_NAME, PKG_NAME, PKG_VERSION};
 pub use error::{Error, Result};
 pub use lambda::start_server_aws_lambda;
 pub use server::start_server;
-pub use totp::{InputToken, try_get_token};
+pub use totp::{InputToken, get_current_token};
