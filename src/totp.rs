@@ -1,23 +1,26 @@
 use axum::Json;
 use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
-use totp_rs::{Algorithm, TOTP};
+use totp_rs::{Algorithm, Builder, Totp};
 
-const TOKEN_DIGITS: usize = 6;
+const TOKEN_DIGITS: u8 = 6;
 
 /// Env var used to get raw secret of TOTP.
 const RAW_SECRET: &str = "RAW_SECRET";
 
-/// Secret which should be used to construct [`totp_rs::TOTP`].
+/// Secret which should be used to construct [`totp_rs::Totp`].
 ///
 /// It hasn't been encoded by base32.
 ///
 /// # Example
 ///
 /// ```
-/// # use totp_rs::{Algorithm, TOTP};
+/// # use totp_rs::{Algorithm, Builder};
 /// # let VEC_SECRET: Vec<u8> = vec![];
-/// let totp = TOTP::new(Algorithm::SHA1, 6, 1, 30, VEC_SECRET.clone(), None, "".to_owned());
+/// let totp = Builder::new()
+///     .with_algorithm(Algorithm::SHA1)
+///     .with_secret(VEC_SECRET.clone())
+///     .build();
 /// ```
 ///
 /// # Panic
@@ -52,24 +55,24 @@ fn init_vec_secret() -> Vec<u8> {
     }
 }
 
-/// Create a new instance of [`TOTP`] with given parameters.
+/// Create a new instance of [`Totp`] with given parameters.
 ///
 /// # Panics
 ///
 /// It panics if the `digit` or `secret` size is invalid.
 /// `digit` is set by [`TOKEN_DIGITS`], thus it's unlikely to be invalid.
 /// `secret` must have bitsize of at least 128 or it will panic.
-fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
-    TOTP::new(
-        Algorithm::SHA1,
-        TOKEN_DIGITS,
-        1,
-        30,
-        secret.into(),
-        Some(crate::PKG_NAME.to_owned()),
-        "incognito".to_owned(),
-    )
-    .unwrap_or_else(|e| panic!("Failed creating a new instance of TOTP: {e}."))
+fn new_totp(secret: impl Into<Vec<u8>>) -> Totp {
+    Builder::new()
+        .with_algorithm(Algorithm::SHA1)
+        .with_digits(TOKEN_DIGITS)
+        .with_skew(1)
+        .with_step_duration(30)
+        .with_secret(secret.into())
+        .with_issuer(Some(crate::PKG_NAME))
+        .with_account_name("incognito")
+        .build()
+        .unwrap_or_else(|e| panic!("Failed creating a new instance of Totp: {e}."))
 }
 
 /// Try get totp token with raw secret.
@@ -82,16 +85,17 @@ fn new_totp(secret: impl Into<Vec<u8>>) -> totp_rs::TOTP {
 /// use totp_server::try_get_token;
 /// let vec = "999a999a999a999a".as_bytes();
 /// assert!(vec.len() >= 16);
-/// let token = try_get_token(&vec).unwrap();
+/// let token = try_get_token(&vec);
+/// # let _ = token;
 /// ```
 ///
-/// # Errors
+/// # Panics
 ///
-/// Returns Err if fails to generate a token from the current system time.
-pub fn try_get_token(secret: &[u8]) -> crate::Result<String> {
+/// Panics if the system clock is set before the Unix epoch.
+#[must_use]
+pub fn get_current_token(secret: &[u8]) -> String {
     let totp = new_totp(secret);
-    let token = totp.generate_current()?;
-    Ok(token)
+    totp.generate_current().to_string()
 }
 
 /// The 6-digits token that users input.
@@ -114,11 +118,11 @@ impl InputToken {
 pub(crate) async fn check_current(Json(input_token): Json<InputToken>) -> crate::Result<()> {
     tracing::debug!("{input_token:?}");
     let token = input_token.token;
-    if token.len() != TOKEN_DIGITS || token.parse::<u32>().is_err() {
+    if token.len() != usize::from(TOKEN_DIGITS) || token.parse::<u32>().is_err() {
         return Err(crate::Error::TotpInvalidFormat);
     }
     let totp = new_totp(VEC_SECRET.clone());
-    if totp.check_current(&token)? {
+    if totp.check_current(&token).is_some() {
         tracing::debug!("Correct TOTP: {token}.");
         Ok(())
     } else {
@@ -129,7 +133,7 @@ pub(crate) async fn check_current(Json(input_token): Json<InputToken>) -> crate:
 /// Print the base32-endcode secret by [`tracing::info!()`].
 pub(crate) fn print_secret_base32() {
     let totp = new_totp(VEC_SECRET.clone());
-    let secret_base32 = totp.get_secret_base32();
+    let secret_base32 = totp.secret().to_base32();
     tracing::info!(%secret_base32);
 }
 
@@ -143,7 +147,9 @@ pub(crate) fn print_qr_code() {
     use qrcode::render::unicode;
 
     let totp = new_totp(VEC_SECRET.clone());
-    let url = totp.get_url();
+    let url = totp
+        .to_url()
+        .unwrap_or_else(|e| panic!("Failed to generate the TOTP URL: {e}."));
     println!("\n{url}");
 
     let code = qrcode::QrCode::new(url)
@@ -164,15 +170,14 @@ mod tests {
     use rstest::rstest;
 
     /// Get the current token.
-    fn get_token() -> crate::Result<Json<InputToken>> {
-        let token = try_get_token(&VEC_SECRET)?;
-        let my_token = InputToken::new(token);
-        Ok(Json(my_token))
+    fn get_token() -> Json<InputToken> {
+        let token = get_current_token(&VEC_SECRET);
+        Json(InputToken::new(token))
     }
 
     #[tokio::test]
     async fn test_token_checker_correct() {
-        let my_token = get_token().unwrap();
+        let my_token = get_token();
         check_current(my_token).await.unwrap();
     }
 

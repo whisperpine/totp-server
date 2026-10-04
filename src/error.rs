@@ -13,9 +13,6 @@ pub enum Error {
     /// The provided TOTP code is invalid or expired.
     #[error("invalid TOTP")]
     TotpInvalid,
-    /// An error occurred while accessing system time.
-    #[error(transparent)]
-    SystemTime(#[from] std::time::SystemTimeError),
 }
 
 impl IntoResponse for Error {
@@ -26,7 +23,6 @@ impl IntoResponse for Error {
         match self {
             E::TotpInvalid => (StatusCode::UNAUTHORIZED, msg).into_response(),
             E::TotpInvalidFormat => (StatusCode::BAD_REQUEST, msg).into_response(),
-            E::SystemTime(_) => (StatusCode::INTERNAL_SERVER_ERROR, msg).into_response(),
         }
     }
 }
