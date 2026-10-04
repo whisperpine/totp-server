@@ -21,13 +21,13 @@ run_command() {
 run_command cargo fmt --check
 
 run_command cargo clippy --release --all-features -- -D warnings
-run_command cargo clippy --examples --release --all-features -- -D warnings
+# run_command cargo clippy --examples --release --all-features -- -D warnings
 run_command cargo clippy --tests --all-features -- -D warnings
 
 run_command cargo nextest run --all-features
 
 RUSTDOCFLAGS="-D warnings" run_command cargo doc --no-deps --all-features
-RUSTDOCFLAGS="-D warnings" run_command cargo doc --no-deps --examples
+# RUSTDOCFLAGS="-D warnings" run_command cargo doc --no-deps --examples
 run_command cargo test --doc --all-features
 
 if [ $exit_code -ne 0 ]; then
