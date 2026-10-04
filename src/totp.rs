@@ -40,9 +40,19 @@ fn init_vec_secret() -> Vec<u8> {
         result
     } else {
         #[cfg(debug_assertions)]
+        #[expect(clippy::cast_possible_truncation)]
         fn handle_error() -> Vec<u8> {
-            use rand::distr::{Alphanumeric, SampleString};
-            let raw_secret = Alphanumeric.sample_string(&mut rand::rng(), 32);
+            use std::collections::hash_map::RandomState;
+            use std::hash::{BuildHasher, Hasher};
+
+            const CHARSET: &[u8] =
+                b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let raw_secret: String = (0..32)
+                .map(|_| {
+                    CHARSET[(RandomState::new().build_hasher().finish() % CHARSET.len() as u64)
+                        as usize] as char
+                })
+                .collect();
             tracing::info!("Using random totp secret in debug build: {}.", raw_secret);
             raw_secret.as_bytes().to_vec()
         }
