@@ -5,13 +5,23 @@ on:
     # Runs every Saturday at 05:15.
     - cron: "15 5 * * 6"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   delete-packages:
+    name: delete container packages
     runs-on: ubuntu-latest
     permissions:
-      packages: write
+      packages: write # required to manage container images in GHCR
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Cleanup container images in ghcr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

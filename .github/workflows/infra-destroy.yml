@@ -10,34 +10,46 @@ on:
         options:
           - "default"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: tf-${{ github.repository }}-${{ github.event.inputs.tf-workspace || 'default' }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   tofu-plan:
+    name: plan infrastructure destruction
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./infra # Set working directory for apply job.
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Create a mock artifact for bootstrap.zip
         run: |
           mkdir -p ../target/lambda/totp-server
           touch ../target/lambda/totp-server/bootstrap.zip
       - uses: cachix/install-nix-action@v31
       - name: Run OpenTofu commands
-        shell: nix shell nixpkgs#opentofu --quiet --command bash {0}
+        shell: nix shell --inputs-from .. nixpkgs#opentofu --quiet --command bash {0}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+          TF_WORKSPACE: ${{ github.event.inputs.tf-workspace || 'default' }}
         run: |
           tofu init
           tofu validate
-          tofu workspace select ${{ github.event.inputs.tf-workspace }}
+          tofu workspace select "$TF_WORKSPACE"
           tofu plan -destroy -out=tfplan
       - name: Encrypt OpenTofu plan file
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        shell: nix shell nixpkgs#sops --quiet --command bash {0}
+        shell: nix shell --inputs-from .. nixpkgs#sops --quiet --command bash {0}
         run: sops encrypt --output tfplan-encrypted tfplan
       - name: Upload encrypted plan artifact
         uses: actions/upload-artifact@v7
@@ -48,6 +60,7 @@ jobs:
           retention-days: 5
 
   tofu-apply:
+    name: destroy infrastructure
     runs-on: ubuntu-latest
     needs: tofu-plan
     environment: infra-${{ github.event.inputs.tf-workspace }}
@@ -57,6 +70,8 @@ jobs:
         working-directory: ./infra # Set working directory for apply job.
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Create a mock artifact for bootstrap.zip
         run: |
           mkdir -p ../target/lambda/totp-server
@@ -70,15 +85,16 @@ jobs:
       - name: Decrypt OpenTofu plan file
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        shell: nix shell nixpkgs#sops --quiet --command bash {0}
+        shell: nix shell --inputs-from .. nixpkgs#sops --quiet --command bash {0}
         run: sops decrypt --output tfplan tfplan-encrypted
       - name: Run OpenTofu commands
-        shell: nix shell nixpkgs#opentofu --quiet --command bash {0}
+        shell: nix shell --inputs-from .. nixpkgs#opentofu --quiet --command bash {0}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+          TF_WORKSPACE: ${{ github.event.inputs.tf-workspace || 'default' }}
         run: |
           tofu init
-          tofu workspace select ${{ github.event.inputs.tf-workspace }}
+          tofu workspace select "$TF_WORKSPACE"
           tofu apply tfplan

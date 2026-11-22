@@ -4,6 +4,13 @@ on:
   workflow_dispatch:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   changelog:
     name: preview changelog
@@ -13,7 +20,8 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history.
           fetch-tags: true
+          persist-credentials: false
       - uses: cachix/install-nix-action@v31
       - name: Run git cliff command
-        shell: nix shell nixpkgs#git-cliff --quiet --command bash {0}
+        shell: nix shell --inputs-from . nixpkgs#git-cliff --quiet --command bash {0}
         run: git-cliff --unreleased >> $GITHUB_STEP_SUMMARY
