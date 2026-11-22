@@ -66,6 +66,7 @@
             packages = with pkgs; [
               # --- common --- #
               rumdl # markdown linter
+              zizmor # lint github actions
               prek # better pre-commit
               typos # check misspelling
               cocogitto # conventional commit toolkit
